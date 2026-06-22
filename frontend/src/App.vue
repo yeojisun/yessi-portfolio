@@ -410,7 +410,7 @@ const formatDate = (dateString) => {
             <div class="contact-icon">📧</div>
             <div class="contact-details">
               <h4>Email</h4>
-              <p>yeojisun@gmail.com</p>
+              <p>duwltjs5921@gmail.com</p>
             </div>
           </div>
           <div class="contact-card">
@@ -424,7 +424,7 @@ const formatDate = (dateString) => {
             <div class="contact-icon">📍</div>
             <div class="contact-details">
               <h4>Location</h4>
-              <p>Seoul, Republic of Korea</p>
+              <p>Incheon, Republic of Korea</p>
             </div>
           </div>
         </div>
