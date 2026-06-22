@@ -1,5 +1,5 @@
 # Build stage: compiles the code using Maven wrapper
-FROM openjdk:17-jdk-slim AS build
+FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
 
 # Copy all backend source files
@@ -10,7 +10,7 @@ RUN chmod +x mvnw
 RUN ./mvnw clean package -DskipTests
 
 # Run stage: lightweight runtime environment
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 # Copy the built jar from the build stage
