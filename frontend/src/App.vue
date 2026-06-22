@@ -4,11 +4,23 @@ import { ref, onMounted, computed } from 'vue'
 // Username state
 const username = 'yeojisun'
 
+// UI Interactive states
+const activeTab = ref('home') // 'home' | 'profile' | 'projects' | 'guestbook'
+const theme = ref('pink') // 'pink' | 'blue'
+const todayMood = ref('열공') // '행복' | '열공' | '바쁨' | '신남' | '피곤'
+
+// Visitor counters (mocked with realistic Cyworld numbers)
+const todayCount = ref(47)
+const totalCount = ref(1328)
+
+// BGM title
+const bgmName = '프리스타일 - Y (Please Tell Me Why) ♬'
+
 // API states
 const profile = ref({
   avatar_url: '',
-  name: 'Yeo Ji Sun (Yeossi)',
-  bio: 'Java & Frontend Developer passionate about building robust backend APIs and gorgeous, interactive web interfaces.',
+  name: '여지선 (Yeossi)',
+  bio: '일촌 신청 환영! 🍀\n자바 스프링 부트 백엔드와 뷰3 프론트엔드를 개발하는 개발자 여지선입니다. 제 미니홈피에 오신 걸 환영해요!',
   public_repos: 0,
   html_url: 'https://github.com/yeojisun'
 })
@@ -17,31 +29,46 @@ const loading = ref(true)
 const error = ref(false)
 
 // Form states
+const submitting = ref(false)
 const formSubmitted = ref(false)
 const formError = ref(false)
-const submitting = ref(false)
 const contactForm = ref({
   name: '',
   email: '',
   message: ''
 })
 
+// Guestbook list (initial mock entries + prepended custom entries)
+const guestbookEntries = ref([
+  {
+    id: 1,
+    name: '신지민 (일촌)',
+    message: '퍼가요~♡ 미니룸 너무 귀엽네요! 깃허브 프로젝트들이 깔끔하게 정리되어 있어서 구경 잘 하고 갑니다.',
+    createdAt: '2026-06-22 10:15:30'
+  },
+  {
+    id: 2,
+    name: '김도훈 (일촌)',
+    message: '야 홈피 꾸미느라 고생했다 ㅋㅋㅋ 자바 백엔드 프로젝트들 코드 대박이네! 나중에 소스공유좀~',
+    createdAt: '2026-06-21 16:45:12'
+  }
+])
+
 // Search and filter states
 const searchQuery = ref('')
 const activeFilter = ref('All')
 const sortBy = ref('updated') // 'updated' or 'stars'
 
-// Fallback mock repositories if rate-limited or offline
+// Fallback projects if GitHub rate-limited
 const fallbackRepos = [
   {
     id: 1,
     name: 'toy-store-backend',
     description: 'Spring Boot, Spring Security, JPA, and PostgreSQL-based API service for managing and processing orders in a toy store application.',
     stargazers_count: 8,
-    forks_count: 2,
     language: 'Java',
     html_url: 'https://github.com/yeojisun/toy-store-backend',
-    topics: ['spring-boot', 'jpa', 'postgresql', 'java', 'security'],
+    topics: ['spring-boot', 'jpa', 'postgresql', 'java'],
     updated_at: '2026-06-15T08:30:00Z'
   },
   {
@@ -49,10 +76,9 @@ const fallbackRepos = [
     name: 'realtime-chat-app',
     description: 'A responsive real-time messaging application with Vue 3, CSS Grid/Flexbox, WebSocket, and Redis caching layers.',
     stargazers_count: 14,
-    forks_count: 4,
     language: 'Vue',
     html_url: 'https://github.com/yeojisun/realtime-chat-app',
-    topics: ['vue', 'javascript', 'websocket', 'redis', 'glassmorphism'],
+    topics: ['vue', 'javascript', 'websocket', 'redis'],
     updated_at: '2026-06-20T12:00:00Z'
   },
   {
@@ -60,63 +86,45 @@ const fallbackRepos = [
     name: 'yeossi-portfolio',
     description: 'My personal developer portfolio containing active GitHub repositories, dynamic filters, and clean responsive CSS.',
     stargazers_count: 5,
-    forks_count: 1,
     language: 'Vue',
     html_url: 'https://github.com/yeojisun/yeossi-portfolio',
     topics: ['vue', 'java', 'vite', 'netlify-forms', 'css-aurora'],
     updated_at: '2026-06-22T10:00:00Z'
-  },
-  {
-    id: 4,
-    name: 'batch-processing-service',
-    description: 'Spring Batch scheduler project compiling raw sales records into metrics tables, leveraging MySQL and cron triggers.',
-    stargazers_count: 6,
-    forks_count: 1,
-    language: 'Java',
-    html_url: 'https://github.com/yeojisun/batch-processing-service',
-    topics: ['spring-batch', 'java', 'mysql', 'scheduler'],
-    updated_at: '2026-05-18T14:40:00Z'
   }
 ]
 
-// Tech Stack Categories
-const skills = [
-  { name: 'Java', icon: '☕', desc: 'Robust enterprise application and API development using Spring ecosystem.', category: 'Backend' },
-  { name: 'Spring Boot', icon: '🍃', desc: 'Microservices, REST controllers, Spring Security, and Spring Data JPA.', category: 'Backend' },
-  { name: 'Vue.js 3', icon: '💚', desc: 'Interactive SPA development with Vite, Vue Router, Composition API.', category: 'Frontend' },
-  { name: 'JavaScript (ES6+)', icon: '💛', desc: 'Dynamic logic, DOM operations, asynchronous request handling.', category: 'Frontend' },
-  { name: 'RDB / SQL', icon: '💾', desc: 'Database schema design and query optimization using H2, MySQL, PostgreSQL.', category: 'Database' },
-  { name: 'Git & GitHub', icon: '🐙', desc: 'Collaborative development, version tracking, CI/CD pipeline structures.', category: 'Tools' }
+// Timeline information for Profile
+const timeline = [
+  { date: '2026.06 - 현재', text: '포트폴리오 미니홈피 리뉴얼 및 신규 프로젝트 진행 중' },
+  { date: '2025.12 - 2026.05', text: 'Spring Boot 기반 장난감 가게 주문 관리 백엔드 API 서비스 개발' },
+  { date: '2025.07 - 2025.11', text: 'Vue 3 + WebSocket 기반 실시간 다자간 채팅 웹 애플리케이션 프로젝트' },
+  { date: '2024.03 - 2025.02', text: 'Spring Batch 프레임워크 기반 일 단위 매출 정산 통계 스케줄러 구현' }
 ]
 
-// Fetch data on mount
+// Fetch Github Info
 onMounted(async () => {
   try {
-    // 1. Fetch GitHub User Profile
     const profileRes = await fetch(`https://api.github.com/users/${username}`)
     if (profileRes.ok) {
       const data = await profileRes.json()
       profile.value = {
         avatar_url: data.avatar_url,
-        name: data.name || 'Yeo Ji Sun',
+        name: data.name || '여지선 (Yeossi)',
         bio: data.bio || profile.value.bio,
         public_repos: data.public_repos,
         html_url: data.html_url
       }
     }
 
-    // 2. Fetch Repositories
     const reposRes = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`)
     if (reposRes.ok) {
       const data = await reposRes.json()
-      // Filter out forks if preferred
       repos.value = data.filter(repo => !repo.fork)
     } else {
-      // Fallback if API fails (rate limits)
       repos.value = fallbackRepos
     }
   } catch (err) {
-    console.error('Error fetching GitHub data:', err)
+    console.error(err)
     error.value = true
     repos.value = fallbackRepos
   } finally {
@@ -124,35 +132,10 @@ onMounted(async () => {
   }
 })
 
-// Star count calculator
-const totalStars = computed(() => {
-  return repos.value.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0)
-})
-
-// Fork count calculator
-const totalForks = computed(() => {
-  return repos.value.reduce((sum, repo) => sum + (repo.forks_count || 0), 0)
-})
-
-// Language badges mapper colors
-const getLanguageColor = (lang) => {
-  const colors = {
-    Java: '#b07219',
-    Vue: '#41b883',
-    JavaScript: '#f1e05a',
-    HTML: '#e34c26',
-    CSS: '#563d7c',
-    TypeScript: '#3178c6',
-    Python: '#3572A5'
-  }
-  return colors[lang] || '#8e8e8e'
-}
-
-// Search and Filter Repositories logic
+// Search & Filter
 const filteredRepos = computed(() => {
   let result = [...repos.value]
 
-  // Filter by search query (name or description)
   if (searchQuery.value.trim() !== '') {
     const q = searchQuery.value.toLowerCase()
     result = result.filter(repo => 
@@ -161,19 +144,16 @@ const filteredRepos = computed(() => {
     )
   }
 
-  // Filter by Category tabs
   if (activeFilter.value !== 'All') {
     if (activeFilter.value === 'Java') {
       result = result.filter(repo => repo.language === 'Java')
     } else if (activeFilter.value === 'Frontend') {
-      result = result.filter(repo => repo.language === 'Vue' || repo.language === 'JavaScript' || repo.language === 'HTML' || repo.language === 'CSS' || repo.language === 'TypeScript')
+      result = result.filter(repo => repo.language === 'Vue' || repo.language === 'JavaScript' || repo.language === 'HTML' || repo.language === 'CSS')
     } else {
-      // Other
-      result = result.filter(repo => repo.language !== 'Java' && repo.language !== 'Vue' && repo.language !== 'JavaScript' && repo.language !== 'HTML' && repo.language !== 'CSS' && repo.language !== 'TypeScript')
+      result = result.filter(repo => repo.language !== 'Java' && repo.language !== 'Vue' && repo.language !== 'JavaScript' && repo.language !== 'HTML' && repo.language !== 'CSS')
     }
   }
 
-  // Sort logic
   if (sortBy.value === 'updated') {
     result.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
   } else if (sortBy.value === 'stars') {
@@ -183,11 +163,25 @@ const filteredRepos = computed(() => {
   return result
 })
 
-// Netlify form submission AJAX handler
+// BGM Toggle Play logic (mock audio alert)
+const playBgm = () => {
+  alert(`BGM 재생 중: ${bgmName}`)
+}
+
+// Wave navigation dropdown select
+const handleWaveChange = (e) => {
+  const url = e.target.value
+  if (url) {
+    window.open(url, '_blank')
+    e.target.value = '' // Reset
+  }
+}
+
+// Netlify form submission handler
 const handleSubmit = async () => {
   submitting.value = true
-  formError.value = false
   formSubmitted.value = false
+  formError.value = false
 
   try {
     const body = new URLSearchParams()
@@ -203,7 +197,18 @@ const handleSubmit = async () => {
     })
 
     if (response.ok) {
+      // Form submits to Netlify successfully
       formSubmitted.value = true
+      
+      // Also prepend the entry dynamically to our local Guestbook display
+      guestbookEntries.value.unshift({
+        id: Date.now(),
+        name: `${contactForm.value.name} (손님)`,
+        message: contactForm.value.message,
+        createdAt: new Date().toISOString().slice(0, 19).replace('T', ' ')
+      })
+
+      // Reset form fields
       contactForm.value = { name: '', email: '', message: '' }
     } else {
       throw new Error('Netlify form submission failed')
@@ -216,296 +221,361 @@ const handleSubmit = async () => {
   }
 }
 
-// Date formatter helper
-const formatDate = (dateString) => {
+// Formatter for date
+const getRelativeDate = (dateString) => {
   if (!dateString) return ''
   const date = new Date(dateString)
-  return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })
+  return `${date.getMonth() + 1}/${date.getDate()}`
 }
 </script>
 
 <template>
-  <div class="aurora-bg">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
-  </div>
-
-  <div class="app-container">
-    <!-- Navigation -->
-    <nav class="navbar">
-      <div class="logo-text">yeossi.dev</div>
-      <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-
-    <!-- Hero / Profile -->
-    <header id="about" class="hero glass-panel">
-      <div class="hero-content">
-        <span class="badge">AVAILABLE FOR WORK</span>
-        <h1 class="hero-title">안녕하세요, <br><span>여지선(Yeossi)</span>입니다.</h1>
-        <p class="hero-description">{{ profile.bio }}</p>
-        <div class="social-links">
-          <a href="#projects" class="btn btn-primary">
-            프로젝트 보기
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-          </a>
-          <a :href="profile.html_url" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-            GitHub 프로필
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
-          </a>
-        </div>
+  <div :class="['cyworld-page-wrapper', { 'theme-blue': theme === 'blue' }]">
+    <!-- Top Control Bar -->
+    <div class="top-control-bar">
+      <div class="theme-toggles">
+        <button @click="theme = 'pink'" class="theme-btn theme-btn-pink">Classic Pink</button>
+        <button @click="theme = 'blue'" class="theme-btn theme-btn-blue">Ocean Blue</button>
       </div>
-
-      <div class="profile-container">
-        <div class="avatar-wrapper">
-          <img v-if="profile.avatar_url" :src="profile.avatar_url" alt="Yeo Ji Sun Profile" class="avatar-img">
-          <div v-else class="profile-initials">YS</div>
-        </div>
-      </div>
-    </header>
-
-    <!-- Stats Dashboard -->
-    <div class="stats-bar glass-panel">
-      <div class="stat-item">
-        <span class="stat-num">{{ repos.length }}</span>
-        <span class="stat-label">Repositories</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num">{{ totalStars }}</span>
-        <span class="stat-label">Total Stars</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num">{{ totalForks }}</span>
-        <span class="stat-label">Forks</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num">Java & Vue</span>
-        <span class="stat-label">Core Stacks</span>
+      <div>
+        <span>yeossi.netlify.app</span>
       </div>
     </div>
 
-    <!-- Skills Section -->
-    <section id="skills">
-      <div class="section-header">
-        <p class="section-subtitle">What I Use</p>
-        <h2 class="section-title">Tech Stack</h2>
-      </div>
-      <div class="skills-grid">
-        <div v-for="skill in skills" :key="skill.name" class="skill-card glass-panel">
-          <div class="skill-icon">{{ skill.icon }}</div>
-          <h3 class="skill-name">{{ skill.name }}</h3>
-          <p class="skill-desc">{{ skill.desc }}</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects">
-      <div class="section-header">
-        <p class="section-subtitle">My Creations</p>
-        <h2 class="section-title">GitHub Repositories</h2>
+    <!-- Outer Binder Grid -->
+    <div class="cyworld-binder">
+      <!-- Spiral rings connector -->
+      <div class="binder-spirals">
+        <div v-for="n in 9" :key="n" class="spiral-ring"></div>
       </div>
 
-      <!-- Controls -->
-      <div class="project-controls">
-        <div class="filter-tabs">
-          <button 
-            v-for="filter in ['All', 'Java', 'Frontend', 'Other']" 
-            :key="filter"
-            @click="activeFilter = filter"
-            :class="['filter-tab', { active: activeFilter === filter }]"
-          >
-            {{ filter }}
-          </button>
-        </div>
+      <!-- Inner frame content -->
+      <div class="cyworld-inner">
+        
+        <!-- LEFT PANEL: Profile -->
+        <aside class="pane-left">
+          <!-- Visitor counter -->
+          <div class="visitor-counter">
+            TODAY <span class="today">{{ todayCount }}</span> | TOTAL <span class="total">{{ totalCount }}</span>
+          </div>
 
-        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-          <input 
-            type="text" 
-            v-model="searchQuery" 
-            placeholder="프로젝트 검색..." 
-            class="search-box"
-          >
-          <select v-model="sortBy" class="search-box" style="min-width: 140px; cursor: pointer;">
-            <option value="updated">최근 업데이트순</option>
-            <option value="stars">별점 많은순</option>
+          <!-- Profile box structure -->
+          <div class="profile-box">
+            <!-- Profile avatar -->
+            <div class="profile-avatar-wrap">
+              <img v-if="profile.avatar_url" :src="profile.avatar_url" alt="Yeossi Profile" class="profile-avatar" />
+              <div v-else class="profile-default-avatar">YS</div>
+            </div>
+
+            <!-- Mood box -->
+            <div class="mood-box">
+              TODAY IS.. 
+              <select v-model="todayMood" style="font-family: inherit; font-size: 0.72rem; border: none; background: transparent; color: #ff0055; font-weight: bold; cursor: pointer;">
+                <option value="행복">행복 ☀️</option>
+                <option value="열공">열공 💻</option>
+                <option value="바쁨">바쁨 ⚡</option>
+                <option value="신남">신남 🎶</option>
+                <option value="피곤">피곤 💤</option>
+              </select>
+            </div>
+
+            <!-- Profile Description -->
+            <p class="profile-desc">{{ profile.bio }}</p>
+
+            <!-- User Detail info -->
+            <div class="profile-user">
+              <div class="profile-user-name">
+                {{ profile.name }}
+                <span style="font-size: 0.7rem; color: #ff0055; font-weight: normal;">(여씨)</span>
+              </div>
+              <div class="profile-user-detail">📧 duwltjs5921@gmail.com</div>
+              <div class="profile-user-detail">📍 Incheon, Korea</div>
+            </div>
+          </div>
+
+          <!-- Wave drop-down list -->
+          <select @change="handleWaveChange" class="ilchon-dropdown">
+            <option value="" disabled selected>파도타기 (Quick Links)</option>
+            <option :value="profile.html_url">GitHub 주소</option>
+            <option value="mailto:duwltjs5921@gmail.com">메일 보내기</option>
           </select>
-        </div>
-      </div>
+        </aside>
 
-      <!-- Projects Grid -->
-      <div class="projects-grid">
-        <!-- Loading State -->
-        <div v-if="loading" class="loading-spinner glass-panel">
-          <div class="spinner"></div>
-          <p>GitHub 저장소를 불러오고 있습니다...</p>
-        </div>
-
-        <!-- Repo Cards -->
-        <div 
-          v-else-if="filteredRepos.length > 0" 
-          v-for="repo in filteredRepos" 
-          :key="repo.id" 
-          class="project-card glass-panel"
-        >
-          <div class="project-card-top">
-            <div class="repo-header">
-              <div class="repo-icon-wrap">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-              </div>
-              <div v-if="repo.stargazers_count > 0" class="repo-stars">
-                <svg width="12" height="12" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                {{ repo.stargazers_count }}
-              </div>
+        <!-- RIGHT PANEL: Main Content -->
+        <main class="pane-right">
+          <!-- Header (Title and BGM) -->
+          <div class="right-header">
+            <h2 class="right-title">{{ profile.name }}의 미니홈피에 오신것을 환영합니다☘</h2>
+            <div @click="playBgm" class="bgm-player" style="cursor: pointer;">
+              <span class="bgm-icon">▶</span>
+              <span class="bgm-title">{{ bgmName }}</span>
             </div>
+          </div>
 
-            <h3 class="project-name">{{ repo.name }}</h3>
-            <p class="project-desc">{{ repo.description || '등록된 프로젝트 설명이 없습니다.' }}</p>
+          <!-- Content Switcher Area -->
+          <div class="right-content-body">
             
-            <div v-if="repo.topics && repo.topics.length" class="project-tags">
-              <span v-for="topic in repo.topics.slice(0, 4)" :key="topic" class="project-tag">
-                {{ topic }}
-              </span>
+            <!-- 1. HOME TAB -->
+            <div v-if="activeTab === 'home'" class="home-section">
+              <!-- Isometric Miniroom container -->
+              <div class="miniroom-container">
+                <span class="miniroom-header-text">Mini Room</span>
+                <div class="isometric-floor"></div>
+                
+                <!-- Avatar character -->
+                <div class="isometric-avatar-wrap">
+                  <div class="miniroom-bubble">
+                    어서오세요! {{ todayMood }} 모드인 여지선의 미니룸입니다 🍀
+                  </div>
+                  <img 
+                    v-if="profile.avatar_url" 
+                    :src="profile.avatar_url" 
+                    alt="Mini avatar" 
+                    class="mini-avatar-character"
+                  />
+                  <div v-else class="mini-avatar-character" style="display:flex;align-items:center;justify-content:center;font-weight:bold;">YS</div>
+                </div>
+              </div>
+
+              <!-- Updated News Grid -->
+              <div class="updated-news">
+                <div class="news-title">Updated News (최근 프로젝트 소식)</div>
+                <div class="news-grid">
+                  <div v-for="repo in repos.slice(0, 4)" :key="repo.id" class="news-item">
+                    <span class="news-item-text">💻 {{ repo.name }}</span>
+                    <span class="news-item-tag">{{ repo.language || 'Code' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- What Friends Say (Mini guestbook comments) -->
+              <div class="friends-say">
+                <div class="friends-say-title">What friends say (일촌 한마디)</div>
+                <div class="friends-say-list">
+                  <div v-for="entry in guestbookEntries.slice(0, 3)" :key="entry.id" class="friends-say-item">
+                    <span class="friends-say-name">{{ entry.name }}</span>
+                    <span class="friends-say-content">{{ entry.message }}</span>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div class="project-card-bottom">
-            <div class="project-lang">
-              <span 
-                v-if="repo.language" 
-                class="lang-dot" 
-                :style="{ backgroundColor: getLanguageColor(repo.language) }"
-              ></span>
-              <span>{{ repo.language || 'Documentation' }}</span>
+            <!-- 2. PROFILE TAB -->
+            <div v-else-if="activeTab === 'profile'" class="profile-section">
+              <div class="profile-card">
+                <div class="profile-card-title">소개 (About Me)</div>
+                <p style="line-height: 1.5; margin-bottom: 10px;">
+                  안녕하세요! 견고한 자바 스프링 부트 백엔드와 상호작용하는 프론트엔드 환경을 구축하는 개발자 여지선입니다.
+                  새로운 기술을 도입하고 성능을 최적화하는 과정에 흥미를 느끼며, 깃허브 프로젝트를 기반으로 포트폴리오를 만들어가고 있습니다.
+                </p>
+              </div>
+
+              <div class="profile-card">
+                <div class="profile-card-title">활동 내역 (Timeline)</div>
+                <div class="timeline">
+                  <div v-for="item in timeline" :key="item.date" class="timeline-item">
+                    <span class="timeline-date">{{ item.date }}</span>
+                    <p class="timeline-text">{{ item.text }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="profile-card">
+                <div class="profile-card-title">기술 스택 (Core Skills)</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.72rem;">
+                  <span style="background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 4px; border: 1px solid #bae6fd;">Java</span>
+                  <span style="background: #dcfce7; color: #15803d; padding: 3px 8px; border-radius: 4px; border: 1px solid #bbf7d0;">Spring Boot</span>
+                  <span style="background: #fef9c3; color: #a16207; padding: 3px 8px; border-radius: 4px; border: 1px solid #fef08a;">Vue.js 3</span>
+                  <span style="background: #fae8ff; color: #86198f; padding: 3px 8px; border-radius: 4px; border: 1px solid #f5d0fe;">JPA / Hibernate</span>
+                  <span style="background: #ffe4e6; color: #be123c; padding: 3px 8px; border-radius: 4px; border: 1px solid #fecdd3;">H2 / PostgreSQL</span>
+                  <span style="background: #f1f5f9; color: #334155; padding: 3px 8px; border-radius: 4px; border: 1px solid #cbd5e1;">Git & GitHub</span>
+                </div>
+              </div>
             </div>
-            <a :href="repo.html_url" target="_blank" rel="noopener noreferrer" class="repo-link">
-              GitHub로 이동
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-          </div>
-        </div>
 
-        <!-- Empty State -->
-        <div v-else class="empty-state glass-panel">
-          <p>검색 조건에 맞는 저장소가 없습니다.</p>
-        </div>
-      </div>
-    </section>
+            <!-- 3. PROJECTS TAB (사진첩) -->
+            <div v-else-if="activeTab === 'projects'" style="display:flex; flex-direction:column; gap:12px;">
+              <!-- Search, Sort and Filter controls -->
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom: 1px solid var(--cy-border-light); padding-bottom: 8px;">
+                <div style="display:flex; gap:4px;">
+                  <button 
+                    v-for="f in ['All', 'Java', 'Frontend', 'Other']" 
+                    :key="f"
+                    @click="activeFilter = f"
+                    :style="{
+                      border: '1px solid var(--cy-border)',
+                      background: activeFilter === f ? 'var(--cy-primary)' : '#ffffff',
+                      color: activeFilter === f ? '#ffffff' : 'var(--cy-text-dark)',
+                      padding: '3px 8px',
+                      fontSize: '0.7rem',
+                      fontWeight: 'bold',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }"
+                  >
+                    {{ f }}
+                  </button>
+                </div>
+                <div style="display:flex; gap:4px;">
+                  <input 
+                    type="text" 
+                    v-model="searchQuery" 
+                    placeholder="프로젝트 검색..." 
+                    style="font-family:inherit; font-size:0.7rem; border:1px solid var(--cy-border); border-radius:4px; padding:3px 8px; max-width: 120px;"
+                  />
+                  <select v-model="sortBy" style="font-family:inherit; font-size:0.7rem; border:1px solid var(--cy-border); border-radius:4px; cursor:pointer;">
+                    <option value="updated">최근수정</option>
+                    <option value="stars">별점순</option>
+                  </select>
+                </div>
+              </div>
 
-    <!-- Contact Section -->
-    <section id="contact">
-      <div class="section-header">
-        <p class="section-subtitle">Get In Touch</p>
-        <h2 class="section-title">Contact Me</h2>
-      </div>
+              <!-- Loading spinner -->
+              <div v-if="loading" style="text-align:center; padding: 2rem;">
+                <p>사진첩을 불러오는 중...</p>
+              </div>
 
-      <div class="contact-container glass-panel">
-        <div class="contact-info">
-          <div class="contact-card">
-            <div class="contact-icon">📧</div>
-            <div class="contact-details">
-              <h4>Email</h4>
-              <p>duwltjs5921@gmail.com</p>
+              <!-- Gallery projects grid -->
+              <div v-else-if="filteredRepos.length > 0" class="gallery-grid">
+                <div v-for="repo in filteredRepos" :key="repo.id" class="gallery-card">
+                  <!-- Graphic placeholder -->
+                  <div class="gallery-image-placeholder">
+                    📂
+                  </div>
+                  <div class="gallery-body">
+                    <h3 class="gallery-title">{{ repo.name }}</h3>
+                    <p class="gallery-desc">{{ repo.description || '등록된 프로젝트 설명이 없습니다.' }}</p>
+                    
+                    <div class="gallery-footer">
+                      <div class="gallery-lang">
+                        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#f59e0b; margin-right:2px;"></span>
+                        <span>{{ repo.language || 'Code' }}</span>
+                      </div>
+                      <a :href="repo.html_url" target="_blank" rel="noopener noreferrer" class="gallery-link">
+                        구경가기 →
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div v-else style="text-align:center; padding: 2rem; color:var(--cy-text-light);">
+                등록된 프로젝트가 없습니다.
+              </div>
             </div>
-          </div>
-          <div class="contact-card">
-            <div class="contact-icon">🐙</div>
-            <div class="contact-details">
-              <h4>GitHub</h4>
-              <p>github.com/yeojisun</p>
+
+            <!-- 4. GUESTBOOK TAB (방명록) -->
+            <div v-else-if="activeTab === 'guestbook'" class="guestbook-section">
+              <!-- Guestbook submit card -->
+              <div class="guestbook-form-card">
+                <form 
+                  name="contact" 
+                  method="POST" 
+                  data-netlify="true" 
+                  data-netlify-honeypot="bot-field"
+                  @submit.prevent="handleSubmit"
+                  class="guestbook-form"
+                >
+                  <input type="hidden" name="form-name" value="contact" />
+                  <p style="display: none;">
+                    <label><input name="bot-field" /></label>
+                  </p>
+
+                  <div class="guestbook-input-row">
+                    <input 
+                      type="text" 
+                      name="name" 
+                      v-model="contactForm.name" 
+                      required 
+                      placeholder="이름" 
+                      class="guestbook-control" 
+                      style="width: 120px;"
+                    />
+                    <input 
+                      type="email" 
+                      name="email" 
+                      v-model="contactForm.email" 
+                      required 
+                      placeholder="이메일" 
+                      class="guestbook-control" 
+                      style="flex: 1;"
+                    />
+                  </div>
+                  <textarea 
+                    name="message" 
+                    v-model="contactForm.message" 
+                    required 
+                    placeholder="방명록을 남겨주세요 (Netlify Form 연동)" 
+                    class="guestbook-control guestbook-textarea"
+                  ></textarea>
+
+                  <button 
+                    type="submit" 
+                    :disabled="submitting" 
+                    class="guestbook-submit"
+                  >
+                    {{ submitting ? '작성 중...' : '등록' }}
+                  </button>
+                </form>
+
+                <div v-if="formSubmitted" style="font-size:0.75rem; color:#10b981; margin-top:8px; font-weight:bold; text-align:center;">
+                  ✓ 방명록이 정상적으로 등록되었습니다!
+                </div>
+                <div v-if="formError" style="font-size:0.75rem; color:#ef4444; margin-top:8px; font-weight:bold; text-align:center;">
+                  ✗ 등록 중 오류가 발생했습니다. 다시 시도해 주세요.
+                </div>
+              </div>
+
+              <!-- Guestbook posts list -->
+              <div class="guestbook-timeline">
+                <div v-for="entry in guestbookEntries" :key="entry.id" class="guestbook-card">
+                  <div class="guestbook-card-header">
+                    <span class="guestbook-card-author">{{ entry.name }}</span>
+                    <span>({{ entry.createdAt }})</span>
+                  </div>
+                  <p class="guestbook-card-body">{{ entry.message }}</p>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="contact-card">
-            <div class="contact-icon">📍</div>
-            <div class="contact-details">
-              <h4>Location</h4>
-              <p>Incheon, Republic of Korea</p>
-            </div>
-          </div>
-        </div>
 
-        <!-- Netlify-integrated form -->
-        <form 
-          name="contact" 
-          method="POST" 
-          data-netlify="true" 
-          data-netlify-honeypot="bot-field"
-          @submit.prevent="handleSubmit"
-          class="contact-form"
-        >
-          <!-- Hidden inputs for Netlify -->
-          <input type="hidden" name="form-name" value="contact" />
-          <p style="display: none;">
-            <label>Don't fill this out if you're human: <input name="bot-field" /></label>
-          </p>
-
-          <div class="form-group">
-            <label for="name">Name</label>
-            <input 
-              type="text" 
-              id="name" 
-              name="name" 
-              v-model="contactForm.name" 
-              required 
-              placeholder="이름을 입력해주세요"
-              class="form-control"
-            >
           </div>
+        </main>
 
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input 
-              type="email" 
-              id="email" 
-              name="email" 
-              v-model="contactForm.email" 
-              required 
-              placeholder="이메일을 입력해주세요"
-              class="form-control"
-            >
-          </div>
-
-          <div class="form-group">
-            <label for="message">Message</label>
-            <textarea 
-              id="message" 
-              name="message" 
-              v-model="contactForm.message" 
-              required 
-              placeholder="메시지를 입력해주세요"
-              class="form-control"
-            ></textarea>
-          </div>
-
+        <!-- Vertical folder tabs on the right edge -->
+        <nav class="nav-tabs-vertical">
           <button 
-            type="submit" 
-            :disabled="submitting" 
-            class="btn btn-primary" 
-            style="align-self: flex-start; min-width: 140px; justify-content: center;"
+            @click="activeTab = 'home'" 
+            :class="['nav-tab-v', { inactive: activeTab !== 'home' }]"
           >
-            {{ submitting ? '보내는 중...' : '보내기' }}
+            홈
           </button>
+          <button 
+            @click="activeTab = 'profile'" 
+            :class="['nav-tab-v', { inactive: activeTab !== 'profile' }]"
+          >
+            프로필
+          </button>
+          <button 
+            @click="activeTab = 'projects'" 
+            :class="['nav-tab-v', { inactive: activeTab !== 'projects' }]"
+          >
+            사진첩
+          </button>
+          <button 
+            @click="activeTab = 'guestbook'" 
+            :class="['nav-tab-v', { inactive: activeTab !== 'guestbook' }]"
+          >
+            방명록
+          </button>
+        </nav>
 
-          <!-- Status Banners -->
-          <div v-if="formSubmitted" class="badge" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); color: var(--success); width: 100%; text-align: center;">
-            ✓ 메시지가 성공적으로 전송되었습니다!
-          </div>
-          <div v-if="formError" class="badge" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #ef4444; width: 100%; text-align: center;">
-            ✗ 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.
-          </div>
-        </form>
       </div>
-    </section>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
+    <!-- Cyworld footer copyright -->
+    <footer class="cyworld-footer">
       <p>&copy; 2026 Yeo Ji Sun (Yeossi). All rights reserved.</p>
-      <p>Built with Vue.js 3, hosted on Netlify.</p>
+      <p>Retro design inspired by classic Cyworld mini-homepage.</p>
     </footer>
   </div>
 </template>
