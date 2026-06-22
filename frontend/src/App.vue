@@ -19,7 +19,7 @@ const bgmName = '프리스타일 - Y (Please Tell Me Why) ♬'
 const profile = ref({
   avatar_url: '',
   name: '여지선 (Yeossi)',
-  bio: '사이좋은 사람들, 싸이월드 🍀\n자바 스프링 부트 백엔드와 뷰3 프론트엔드를 개발하는 개발자 여지선입니다. 제 미니홈피에 오신 걸 환영해요!',
+  bio: '',
   public_repos: 0,
   html_url: 'https://github.com/yeojisun'
 })
