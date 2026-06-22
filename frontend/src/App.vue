@@ -37,7 +37,12 @@ const contactForm = ref({
   message: ''
 })
 
-// Guestbook list (initial mock entries + prepended custom entries)
+// Guestbook list (initial// Backend API URL mapping
+const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:8080'
+  : 'https://yeossi-backend.onrender.com' // Replace with your actual Render URL once deployed
+
+// Guestbook list (loaded dynamically from database)
 const guestbookEntries = ref([
   {
     id: 1,
@@ -52,6 +57,26 @@ const guestbookEntries = ref([
     createdAt: '2026-06-21 16:45:12'
   }
 ])
+
+// Fetch guestbook list from Java Backend
+const fetchGuestbook = async () => {
+  try {
+    const res = await fetch(`${backendUrl}/api/messages`)
+    if (res.ok) {
+      const data = await res.json()
+      if (data && data.length > 0) {
+        guestbookEntries.value = data.map(item => ({
+          id: item.id,
+          name: `${item.name} (손님)`,
+          message: item.message,
+          createdAt: item.createdAt ? item.createdAt.replace('T', ' ').slice(0, 19) : ''
+        })).reverse() // Show latest first
+      }
+    }
+  } catch (err) {
+    console.error('Error fetching guestbook:', err)
+  }
+}
 
 // Search and filter states
 const searchQuery = ref('')
@@ -100,8 +125,11 @@ const timeline = [
   { date: '2024.03 - 2025.02', text: 'Spring Batch 프레임워크 기반 일 단위 매출 정산 통계 스케줄러 구현' }
 ]
 
-// Fetch Github Info
+// Fetch Github Info & Guestbook
 onMounted(async () => {
+  // Load guestbook from database first
+  fetchGuestbook()
+
   try {
     const profileRes = await fetch(`https://api.github.com/users/${username}`)
     if (profileRes.ok) {
@@ -171,56 +199,38 @@ const handleWaveChange = (e) => {
   }
 }
 
-// Netlify form submission handler
+// Java Spring Boot REST API guestbook submission handler
 const handleSubmit = async () => {
   submitting.value = true
   formSubmitted.value = false
   formError.value = false
 
-  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-
   try {
-    let success = false
-
-    if (isLocal) {
-      // Simulate network request delay for natural UX
-      await new Promise(resolve => setTimeout(resolve, 500))
-      success = true
-      console.log('Local development mode: Bypassed Netlify form POST. Message saved to screen mockup.')
-    } else {
-      const body = new URLSearchParams()
-      body.append('form-name', 'contact')
-      body.append('bot-field', '')
-      body.append('name', contactForm.value.name)
-      body.append('email', contactForm.value.email)
-      body.append('message', contactForm.value.message)
-
-      const response = await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body.toString()
+    const response = await fetch(`${backendUrl}/api/messages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: contactForm.value.name,
+        email: contactForm.value.email,
+        message: contactForm.value.message
       })
-      success = response.ok
-    }
+    })
 
-    if (success) {
+    if (response.ok) {
       formSubmitted.value = true
       
-      // Prepend entry dynamically
-      guestbookEntries.value.unshift({
-        id: Date.now(),
-        name: `${contactForm.value.name} (손님)`,
-        message: contactForm.value.message,
-        createdAt: new Date().toISOString().slice(0, 19).replace('T', ' ')
-      })
+      // Refresh guestbook list from DB
+      await fetchGuestbook()
 
       // Reset form fields
       contactForm.value = { name: '', email: '', message: '' }
     } else {
-      throw new Error('Form submission failed')
+      throw new Error('Database message post failed')
     }
   } catch (err) {
-    console.error(err)
+    console.error('Error posting guestbook:', err)
     formError.value = true
   } finally {
     submitting.value = false
