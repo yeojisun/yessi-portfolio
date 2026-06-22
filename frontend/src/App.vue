@@ -64,20 +64,7 @@ const backendUrl = window.location.hostname === 'localhost' || window.location.h
   : 'https://yeossi-backend.onrender.com' // Replace with your actual Render URL once deployed
 
 // Guestbook list (loaded dynamically from database)
-const guestbookEntries = ref([
-  {
-    id: 1,
-    name: '신지민 (일촌)',
-    message: '퍼가요~♡ 미니룸 너무 귀엽네요! 깃허브 프로젝트들이 깔끔하게 정리되어 있어서 구경 잘 하고 갑니다.',
-    createdAt: '2026-06-22 10:15:30'
-  },
-  {
-    id: 2,
-    name: '김도훈 (일촌)',
-    message: '야 홈피 꾸미느라 고생했다 ㅋㅋㅋ 자바 백엔드 프로젝트들 코드 대박이네! 나중에 소스공유좀~',
-    createdAt: '2026-06-21 16:45:12'
-  }
-])
+const guestbookEntries = ref([])
 
 // Fetch guestbook list from Java Backend
 const fetchGuestbook = async () => {
