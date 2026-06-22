@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Netlify Form Gateway</title>
+</head>
+<body>
+  <!-- This static form is processed by Netlify at build time to register the inbox -->
+  <form name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" action="/">
+    <input type="hidden" name="form-name" value="contact" />
+    <input type="hidden" name="bot-field" />
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <textarea name="message"></textarea>
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>

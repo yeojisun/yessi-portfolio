@@ -195,7 +195,7 @@ const handleSubmit = async () => {
       body.append('email', contactForm.value.email)
       body.append('message', contactForm.value.message)
 
-      const response = await fetch('/index.html', {
+      const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: body.toString()
