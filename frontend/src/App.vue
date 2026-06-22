@@ -8,9 +8,9 @@ const username = 'yeojisun'
 const activeTab = ref('home') // 'home' | 'profile' | 'projects' | 'guestbook'
 const todayMood = ref('열공') // '행복' | '열공' | '바쁨' | '신남' | '피곤'
 
-// Visitor counters (mocked with realistic Cyworld numbers)
-const todayCount = ref(38)
-const totalCount = ref(1524)
+// Visitor counters (starts at 0 and increments with real visits)
+const todayCount = ref(0)
+const totalCount = ref(0)
 
 // BGM title
 const bgmName = '프리스타일 - Y ♬'
@@ -99,6 +99,30 @@ const fetchGuestbook = async () => {
   }
 }
 
+// Fetch and increment visitor count from database
+const recordVisit = async () => {
+  try {
+    const hasVisited = sessionStorage.getItem('visited_today')
+    let res
+    if (!hasVisited) {
+      res = await fetch(`${backendUrl}/api/visits`, { method: 'POST' })
+      sessionStorage.setItem('visited_today', 'true')
+    } else {
+      res = await fetch(`${backendUrl}/api/visits`, { method: 'GET' })
+    }
+
+    if (res.ok) {
+      const data = await res.json()
+      // Adding a base offset to the total counts to make it look like a historical Cyworld homepage
+      const BASE_OFFSET = 1520
+      todayCount.value = data.today || 0
+      totalCount.value = (data.total || 0) + BASE_OFFSET
+    }
+  } catch (err) {
+    console.error('Error logging visit:', err)
+  }
+}
+
 // Search and filter states
 const searchQuery = ref('')
 const activeFilter = ref('All')
@@ -146,10 +170,11 @@ const timeline = [
   { date: '2024.03 - 2025.02', text: 'Spring Batch 프레임워크 기반 일 단위 매출 정산 통계 스케줄러 구현' }
 ]
 
-// Fetch Github Info & Guestbook
+// Fetch Github Info, Guestbook & Visits
 onMounted(async () => {
-  // Load guestbook from database first
+  // Load guestbook and visits from DB
   fetchGuestbook()
+  recordVisit()
 
   try {
     const profileRes = await fetch(`https://api.github.com/users/${username}`)
