@@ -17,29 +17,21 @@ const bgmName = '프리스타일 - Y ♬'
 
 // BGM audio states
 const isPlaying = ref(false)
-const audio = ref(null)
 
 const toggleBgm = () => {
-  if (!audio.value) {
-    audio.value = new Audio('/bgm.mp3')
-    audio.value.addEventListener('error', () => {
-      console.log('Custom bgm.mp3 not found, falling back to default BGM.')
-      audio.value.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
-      if (isPlaying.value) {
-        audio.value.play().catch(err => console.log('Playback failed:', err))
-      }
-    })
-    audio.value.loop = true
-  }
+  const player = document.getElementById('yt-player')
+  if (!player) return
 
   if (isPlaying.value) {
-    audio.value.pause()
+    player.contentWindow.postMessage(JSON.stringify({
+      event: 'command',
+      func: 'pauseVideo'
+    }), '*')
   } else {
-    audio.value.play().catch(err => {
-      console.log('Playback failed:', err)
-      audio.value.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
-      audio.value.play().catch(e => console.log('Fallback playback failed:', e))
-    })
+    player.contentWindow.postMessage(JSON.stringify({
+      event: 'command',
+      func: 'playVideo'
+    }), '*')
   }
   isPlaying.value = !isPlaying.value
 }
@@ -269,6 +261,13 @@ const handleSubmit = async () => {
 
 <template>
   <div class="background">
+    <!-- Hidden YouTube Embed for BGM Playback (Freestyle - Y) -->
+    <iframe 
+      id="yt-player"
+      src="https://www.youtube.com/embed/dYIT_jeUBKg?enablejsapi=1&controls=0&rel=0&autoplay=0&loop=1&playlist=dYIT_jeUBKg"
+      style="position: absolute; width: 1px; height: 1px; left: -9999px; top: -9999px; border: none; pointer-events: none;"
+      allow="autoplay"
+    ></iframe>
     <div class="outerbox">
       <div class="wrapper">
         
