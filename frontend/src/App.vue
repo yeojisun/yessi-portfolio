@@ -7,7 +7,7 @@ const username = 'yeojisun'
 // API states
 const profile = ref({
   avatar_url: '',
-  name: 'Yeo Ji Sun (Yessi)',
+  name: 'Yeo Ji Sun (Yeossi)',
   bio: 'Java & Frontend Developer passionate about building robust backend APIs and gorgeous, interactive web interfaces.',
   public_repos: 0,
   html_url: 'https://github.com/yeojisun'
@@ -57,12 +57,12 @@ const fallbackRepos = [
   },
   {
     id: 3,
-    name: 'yessi-portfolio',
+    name: 'yeossi-portfolio',
     description: 'My personal developer portfolio containing active GitHub repositories, dynamic filters, and clean responsive CSS.',
     stargazers_count: 5,
     forks_count: 1,
     language: 'Vue',
-    html_url: 'https://github.com/yeojisun/yessi-portfolio',
+    html_url: 'https://github.com/yeojisun/yeossi-portfolio',
     topics: ['vue', 'java', 'vite', 'netlify-forms', 'css-aurora'],
     updated_at: '2026-06-22T10:00:00Z'
   },
@@ -234,7 +234,7 @@ const formatDate = (dateString) => {
   <div class="app-container">
     <!-- Navigation -->
     <nav class="navbar">
-      <div class="logo-text">yessi.dev</div>
+      <div class="logo-text">yeossi.dev</div>
       <ul class="nav-links">
         <li><a href="#about">About</a></li>
         <li><a href="#skills">Skills</a></li>
@@ -247,7 +247,7 @@ const formatDate = (dateString) => {
     <header id="about" class="hero glass-panel">
       <div class="hero-content">
         <span class="badge">AVAILABLE FOR WORK</span>
-        <h1 class="hero-title">안녕하세요, <br><span>여지선(Yessi)</span>입니다.</h1>
+        <h1 class="hero-title">안녕하세요, <br><span>여지선(Yeossi)</span>입니다.</h1>
         <p class="hero-description">{{ profile.bio }}</p>
         <div class="social-links">
           <a href="#projects" class="btn btn-primary">
@@ -504,7 +504,7 @@ const formatDate = (dateString) => {
 
     <!-- Footer -->
     <footer class="footer">
-      <p>&copy; 2026 Yeo Ji Sun (Yessi). All rights reserved.</p>
+      <p>&copy; 2026 Yeo Ji Sun (Yeossi). All rights reserved.</p>
       <p>Built with Vue.js 3, hosted on Netlify.</p>
     </footer>
   </div>

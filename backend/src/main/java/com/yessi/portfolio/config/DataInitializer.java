@@ -41,12 +41,12 @@ public class DataInitializer implements CommandLineRunner {
                     .build();
 
             ProjectItem p3 = ProjectItem.builder()
-                    .name("yessi-portfolio")
+                    .name("yeossi-portfolio")
                     .description("My personal developer portfolio containing active GitHub repositories, dynamic filters, and clean responsive CSS.")
                     .stargazersCount(5)
                     .forksCount(1)
                     .language("Vue")
-                    .htmlUrl("https://github.com/yeojisun/yessi-portfolio")
+                    .htmlUrl("https://github.com/yeojisun/yeossi-portfolio")
                     .topics(Arrays.asList("vue", "java", "vite", "netlify-forms", "css-aurora"))
                     .updatedAt(LocalDateTime.now())
                     .build();
