@@ -13,7 +13,36 @@ const todayCount = ref(38)
 const totalCount = ref(1524)
 
 // BGM title
-const bgmName = '프리스타일 - Y (Please Tell Me Why) ♬'
+const bgmName = '프리스타일 - Y ♬'
+
+// BGM audio states
+const isPlaying = ref(false)
+const audio = ref(null)
+
+const toggleBgm = () => {
+  if (!audio.value) {
+    audio.value = new Audio('/bgm.mp3')
+    audio.value.addEventListener('error', () => {
+      console.log('Custom bgm.mp3 not found, falling back to default BGM.')
+      audio.value.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+      if (isPlaying.value) {
+        audio.value.play().catch(err => console.log('Playback failed:', err))
+      }
+    })
+    audio.value.loop = true
+  }
+
+  if (isPlaying.value) {
+    audio.value.pause()
+  } else {
+    audio.value.play().catch(err => {
+      console.log('Playback failed:', err)
+      audio.value.src = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+      audio.value.play().catch(e => console.log('Fallback playback failed:', e))
+    })
+  }
+  isPlaying.value = !isPlaying.value
+}
 
 // API states
 const profile = ref({
@@ -301,7 +330,13 @@ const handleSubmit = async () => {
         <div class="wrapper__right">
           <div class="wrapper__right__header">
             <div class="right__header__title"><b>{{ profile.name }}의 미니홈피</b></div>
-            <div class="right__header__setup">{{ bgmName }}</div>
+            <div class="right__header__setup">
+              <span class="bgm-icon" :class="{ 'bgm-playing': isPlaying }">🎵</span>
+              <span>{{ bgmName }}</span>
+              <button @click="toggleBgm" class="bgm-btn">
+                {{ isPlaying ? '⏸' : '▶' }}
+              </button>
+            </div>
           </div>
           <div class="wrapper__right__body">
             
