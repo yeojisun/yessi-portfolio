@@ -6,12 +6,11 @@ const username = 'yeojisun'
 
 // UI Interactive states
 const activeTab = ref('home') // 'home' | 'profile' | 'projects' | 'guestbook'
-const theme = ref('pink') // 'pink' | 'blue'
 const todayMood = ref('열공') // '행복' | '열공' | '바쁨' | '신남' | '피곤'
 
 // Visitor counters (mocked with realistic Cyworld numbers)
-const todayCount = ref(47)
-const totalCount = ref(1328)
+const todayCount = ref(38)
+const totalCount = ref(1524)
 
 // BGM title
 const bgmName = '프리스타일 - Y (Please Tell Me Why) ♬'
@@ -20,7 +19,7 @@ const bgmName = '프리스타일 - Y (Please Tell Me Why) ♬'
 const profile = ref({
   avatar_url: '',
   name: '여지선 (Yeossi)',
-  bio: '일촌 신청 환영! 🍀\n자바 스프링 부트 백엔드와 뷰3 프론트엔드를 개발하는 개발자 여지선입니다. 제 미니홈피에 오신 걸 환영해요!',
+  bio: '사이좋은 사람들, 싸이월드 🍀\n자바 스프링 부트 백엔드와 뷰3 프론트엔드를 개발하는 개발자 여지선입니다. 제 미니홈피에 오신 걸 환영해요!',
   public_repos: 0,
   html_url: 'https://github.com/yeojisun'
 })
@@ -163,11 +162,6 @@ const filteredRepos = computed(() => {
   return result
 })
 
-// BGM Toggle Play logic (mock audio alert)
-const playBgm = () => {
-  alert(`BGM 재생 중: ${bgmName}`)
-}
-
 // Wave navigation dropdown select
 const handleWaveChange = (e) => {
   const url = e.target.value
@@ -197,10 +191,9 @@ const handleSubmit = async () => {
     })
 
     if (response.ok) {
-      // Form submits to Netlify successfully
       formSubmitted.value = true
       
-      // Also prepend the entry dynamically to our local Guestbook display
+      // Prepend entry dynamically
       guestbookEntries.value.unshift({
         id: Date.now(),
         name: `${contactForm.value.name} (손님)`,
@@ -220,254 +213,190 @@ const handleSubmit = async () => {
     submitting.value = false
   }
 }
-
-// Formatter for date
-const getRelativeDate = (dateString) => {
-  if (!dateString) return ''
-  const date = new Date(dateString)
-  return `${date.getMonth() + 1}/${date.getDate()}`
-}
 </script>
 
 <template>
-  <div :class="['cyworld-page-wrapper', { 'theme-blue': theme === 'blue' }]">
-    <!-- Top Control Bar -->
-    <div class="top-control-bar">
-      <div class="theme-toggles">
-        <button @click="theme = 'pink'" class="theme-btn theme-btn-pink">Classic Pink</button>
-        <button @click="theme = 'blue'" class="theme-btn theme-btn-blue">Ocean Blue</button>
-      </div>
-      <div>
-        <span>yeossi.netlify.app</span>
-      </div>
-    </div>
-
-    <!-- Outer Binder Grid -->
-    <div class="cyworld-binder">
-      <!-- Spiral rings connector -->
-      <div class="binder-spirals">
-        <div v-for="n in 9" :key="n" class="spiral-ring"></div>
-      </div>
-
-      <!-- Inner frame content -->
-      <div class="cyworld-inner">
+  <div class="background">
+    <div class="outerbox">
+      <div class="wrapper">
         
-        <!-- LEFT PANEL: Profile -->
-        <aside class="pane-left">
-          <!-- Visitor counter -->
-          <div class="visitor-counter">
-            TODAY <span class="today">{{ todayCount }}</span> | TOTAL <span class="total">{{ totalCount }}</span>
+        <!-- WRAPPER LEFT: Profile Panel -->
+        <div class="wrapper__left">
+          <div class="wrapper__left__header">
+            <div class="today">
+              <span>TODAY </span><span class="today-num">{{ todayCount }}</span><span> | TOTAL </span><span>{{ totalCount }}</span>
+            </div>
           </div>
-
-          <!-- Profile box structure -->
-          <div class="profile-box">
-            <!-- Profile avatar -->
-            <div class="profile-avatar-wrap">
-              <img v-if="profile.avatar_url" :src="profile.avatar_url" alt="Yeossi Profile" class="profile-avatar" />
-              <div v-else class="profile-default-avatar">YS</div>
-            </div>
-
-            <!-- Mood box -->
-            <div class="mood-box">
-              TODAY IS.. 
-              <select v-model="todayMood" style="font-family: inherit; font-size: 0.72rem; border: none; background: transparent; color: #ff0055; font-weight: bold; cursor: pointer;">
-                <option value="행복">행복 ☀️</option>
-                <option value="열공">열공 💻</option>
-                <option value="바쁨">바쁨 ⚡</option>
-                <option value="신남">신남 🎶</option>
-                <option value="피곤">피곤 💤</option>
-              </select>
-            </div>
-
-            <!-- Profile Description -->
-            <p class="profile-desc">{{ profile.bio }}</p>
-
-            <!-- User Detail info -->
-            <div class="profile-user">
-              <div class="profile-user-name">
-                {{ profile.name }}
-                <span style="font-size: 0.7rem; color: #ff0055; font-weight: normal;">(여씨)</span>
+          <div class="wrapper__left__body">
+            <div class="left__body__header">
+              <!-- Avatar Profile Image -->
+              <div class="left__body__header_gray">
+                <img v-if="profile.avatar_url" :src="profile.avatar_url" alt="Yeossi Profile" />
+                <div v-else style="font-weight:bold; color:gray;">YS</div>
               </div>
-              <div class="profile-user-detail">📧 duwltjs5921@gmail.com</div>
-              <div class="profile-user-detail">📍 Incheon, Korea</div>
+              
+              <!-- Mood display -->
+              <div style="font-size: 8px; text-align: center; margin-top: 6px; color: #ff5500;">
+                오늘의 기분: 
+                <select v-model="todayMood" style="font-family: inherit; font-size: 8px; border: none; font-weight: bold; cursor: pointer; color: #ff5500; background: transparent;">
+                  <option value="행복">행복 ☀️</option>
+                  <option value="열공">열공 💻</option>
+                  <option value="바쁨">바쁨 ⚡</option>
+                  <option value="신남">신남 🎶</option>
+                  <option value="피곤">피곤 💤</option>
+                </select>
+              </div>
+
+              <div class="left__body__header_line"></div>
+            </div>
+
+            <!-- Profile Info Details -->
+            <div class="left__body__profile">
+              <div class="profile-detail-item">👤 이름: 여지선</div>
+              <div class="profile-detail-item">✉️ E-mail: duwltjs5921@gmail.com</div>
+              <div class="profile-detail-item">🔔 Location: Incheon</div>
+              
+              <!-- Short description bio text -->
+              <p style="font-size: 8px; color: gray; margin-top: 6px; line-height: 1.3; white-space: pre-wrap;">{{ profile.bio }}</p>
+            </div>
+
+            <!-- Footer Wave selection drop-down -->
+            <div class="left__body__footer">
+              <p style="font-size: 10px; color: gray; padding-bottom: 6px;">일촌 파도타기</p>
+              <div>
+                <select @change="handleWaveChange" class="selectBox">
+                  <option value="" disabled selected>선택하세요</option>
+                  <option :value="profile.html_url">GitHub 저장소</option>
+                  <option value="mailto:duwltjs5921@gmail.com">이메일 쓰기</option>
+                </select>
+              </div>
             </div>
           </div>
+        </div>
 
-          <!-- Wave drop-down list -->
-          <select @change="handleWaveChange" class="ilchon-dropdown">
-            <option value="" disabled selected>파도타기 (Quick Links)</option>
-            <option :value="profile.html_url">GitHub 주소</option>
-            <option value="mailto:duwltjs5921@gmail.com">메일 보내기</option>
-          </select>
-        </aside>
-
-        <!-- RIGHT PANEL: Main Content -->
-        <main class="pane-right">
-          <!-- Header (Title and BGM) -->
-          <div class="right-header">
-            <h2 class="right-title">{{ profile.name }}의 미니홈피에 오신것을 환영합니다☘</h2>
-            <div @click="playBgm" class="bgm-player" style="cursor: pointer;">
-              <span class="bgm-icon">▶</span>
-              <span class="bgm-title">{{ bgmName }}</span>
-            </div>
+        <!-- WRAPPER RIGHT: Content Panel -->
+        <div class="wrapper__right">
+          <div class="wrapper__right__header">
+            <div class="right__header__title"><b>{{ profile.name }}의 미니홈피</b></div>
+            <div class="right__header__setup">{{ bgmName }}</div>
           </div>
-
-          <!-- Content Switcher Area -->
-          <div class="right-content-body">
+          <div class="wrapper__right__body">
             
             <!-- 1. HOME TAB -->
-            <div v-if="activeTab === 'home'" class="home-section">
-              <!-- Isometric Miniroom container -->
-              <div class="miniroom-container">
-                <span class="miniroom-header-text">Mini Room</span>
-                <div class="isometric-floor"></div>
-                
-                <!-- Avatar character -->
-                <div class="isometric-avatar-wrap">
-                  <div class="miniroom-bubble">
-                    어서오세요! {{ todayMood }} 모드인 여지선의 미니룸입니다 🍀
-                  </div>
-                  <img 
-                    v-if="profile.avatar_url" 
-                    :src="profile.avatar_url" 
-                    alt="Mini avatar" 
-                    class="mini-avatar-character"
-                  />
-                  <div v-else class="mini-avatar-character" style="display:flex;align-items:center;justify-content:center;font-weight:bold;">YS</div>
+            <div v-if="activeTab === 'home'" class="home-layout">
+              <!-- Updated News Block -->
+              <div class="home-section-block">
+                <div class="contents_title">
+                  <div class="title">Updated news</div>
+                  <div class="subtitle">TODAY STORY</div>
                 </div>
-              </div>
-
-              <!-- Updated News Grid -->
-              <div class="updated-news">
-                <div class="news-title">Updated News (최근 프로젝트 소식)</div>
-                <div class="news-grid">
-                  <div v-for="repo in repos.slice(0, 4)" :key="repo.id" class="news-item">
-                    <span class="news-item-text">💻 {{ repo.name }}</span>
-                    <span class="news-item-tag">{{ repo.language || 'Code' }}</span>
+                <div class="divdideLine"></div>
+                <div class="contents__body">
+                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 10px;">
+                    <div v-for="repo in repos.slice(0, 4)" :key="repo.id" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#666;">
+                      📂 {{ repo.name }} ({{ repo.language || 'Code' }})
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <!-- What Friends Say (Mini guestbook comments) -->
-              <div class="friends-say">
-                <div class="friends-say-title">What friends say (일촌 한마디)</div>
-                <div class="friends-say-list">
-                  <div v-for="entry in guestbookEntries.slice(0, 3)" :key="entry.id" class="friends-say-item">
-                    <span class="friends-say-name">{{ entry.name }}</span>
-                    <span class="friends-say-content">{{ entry.message }}</span>
+              <!-- Miniroom Block -->
+              <div class="home-section-block" style="margin-top: 15px; flex: 1; display:flex; flex-direction:column; justify-content:flex-end;">
+                <div class="contents_title">
+                  <div class="title">My Miniroom</div>
+                  <div class="subtitle">INTRODUCE YOURSELF</div>
+                </div>
+                <div class="body__contents__body_gray">
+                  <div class="miniroom-floor"></div>
+                  <div class="miniroom-avatar">
+                    <div class="miniroom-speech">어서오세요! {{ todayMood }} 모드 여지선 미니룸 ☘</div>
+                    <img v-if="profile.avatar_url" :src="profile.avatar_url" alt="Yeossi avatar" />
+                    <div v-else style="font-weight:bold; color:gray; font-size:1.5rem;">YS</div>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- 2. PROFILE TAB -->
-            <div v-else-if="activeTab === 'profile'" class="profile-section">
-              <div class="profile-card">
-                <div class="profile-card-title">소개 (About Me)</div>
-                <p style="line-height: 1.5; margin-bottom: 10px;">
-                  안녕하세요! 견고한 자바 스프링 부트 백엔드와 상호작용하는 프론트엔드 환경을 구축하는 개발자 여지선입니다.
-                  새로운 기술을 도입하고 성능을 최적화하는 과정에 흥미를 느끼며, 깃허브 프로젝트를 기반으로 포트폴리오를 만들어가고 있습니다.
-                </p>
+            <div v-else-if="activeTab === 'profile'" class="guestbook-wrapper">
+              <div class="contents_title">
+                <div class="title">My Profile</div>
+                <div class="subtitle">ABOUT ME & TIMELINE</div>
               </div>
+              <div class="divdideLine"></div>
+              
+              <p style="font-size:10px; color:#555; line-height:1.4; margin-bottom: 8px;">
+                안녕하세요! 자바 백엔드와 뷰3 프론트엔드를 다루는 주니어 개발자 여지선입니다.
+                구조적이고 확장 가능한 백엔드 아키텍처 설계와 아름답고 사용하기 편리한 웹 서비스 개발을 지향합니다.
+              </p>
 
-              <div class="profile-card">
-                <div class="profile-card-title">활동 내역 (Timeline)</div>
-                <div class="timeline">
-                  <div v-for="item in timeline" :key="item.date" class="timeline-item">
-                    <span class="timeline-date">{{ item.date }}</span>
-                    <p class="timeline-text">{{ item.text }}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="profile-card">
-                <div class="profile-card-title">기술 스택 (Core Skills)</div>
-                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.72rem;">
-                  <span style="background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 4px; border: 1px solid #bae6fd;">Java</span>
-                  <span style="background: #dcfce7; color: #15803d; padding: 3px 8px; border-radius: 4px; border: 1px solid #bbf7d0;">Spring Boot</span>
-                  <span style="background: #fef9c3; color: #a16207; padding: 3px 8px; border-radius: 4px; border: 1px solid #fef08a;">Vue.js 3</span>
-                  <span style="background: #fae8ff; color: #86198f; padding: 3px 8px; border-radius: 4px; border: 1px solid #f5d0fe;">JPA / Hibernate</span>
-                  <span style="background: #ffe4e6; color: #be123c; padding: 3px 8px; border-radius: 4px; border: 1px solid #fecdd3;">H2 / PostgreSQL</span>
-                  <span style="background: #f1f5f9; color: #334155; padding: 3px 8px; border-radius: 4px; border: 1px solid #cbd5e1;">Git & GitHub</span>
+              <div class="profile-timeline">
+                <div v-for="item in timeline" :key="item.date" class="profile-timeline-item">
+                  <div class="profile-timeline-date">{{ item.date }}</div>
+                  <div class="profile-timeline-desc">{{ item.text }}</div>
                 </div>
               </div>
             </div>
 
             <!-- 3. PROJECTS TAB (사진첩) -->
-            <div v-else-if="activeTab === 'projects'" style="display:flex; flex-direction:column; gap:12px;">
-              <!-- Search, Sort and Filter controls -->
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom: 1px solid var(--cy-border-light); padding-bottom: 8px;">
-                <div style="display:flex; gap:4px;">
+            <div v-else-if="activeTab === 'projects'" class="guestbook-wrapper">
+              <div class="contents_title">
+                <div class="title">My Projects</div>
+                <div class="subtitle">PHOTO GALLERY</div>
+              </div>
+              <div class="divdideLine"></div>
+
+              <!-- Gallery filter list -->
+              <div style="display:flex; justify-content:space-between; gap:4px; font-size:9px; margin-bottom: 8px;">
+                <div style="display:flex; gap:2px;">
                   <button 
-                    v-for="f in ['All', 'Java', 'Frontend', 'Other']" 
-                    :key="f"
-                    @click="activeFilter = f"
+                    v-for="cat in ['All', 'Java', 'Frontend']" 
+                    :key="cat"
+                    @click="activeFilter = cat"
                     :style="{
-                      border: '1px solid var(--cy-border)',
-                      background: activeFilter === f ? 'var(--cy-primary)' : '#ffffff',
-                      color: activeFilter === f ? '#ffffff' : 'var(--cy-text-dark)',
-                      padding: '3px 8px',
-                      fontSize: '0.7rem',
-                      fontWeight: 'bold',
-                      borderRadius: '4px',
+                      border: '1px solid gray',
+                      background: activeFilter === cat ? '#298eb5' : '#fff',
+                      color: activeFilter === cat ? '#fff' : '#000',
+                      padding: '2px 5px',
+                      fontSize: '9px',
                       cursor: 'pointer'
                     }"
                   >
-                    {{ f }}
+                    {{ cat }}
                   </button>
                 </div>
-                <div style="display:flex; gap:4px;">
-                  <input 
-                    type="text" 
-                    v-model="searchQuery" 
-                    placeholder="프로젝트 검색..." 
-                    style="font-family:inherit; font-size:0.7rem; border:1px solid var(--cy-border); border-radius:4px; padding:3px 8px; max-width: 120px;"
-                  />
-                  <select v-model="sortBy" style="font-family:inherit; font-size:0.7rem; border:1px solid var(--cy-border); border-radius:4px; cursor:pointer;">
-                    <option value="updated">최근수정</option>
-                    <option value="stars">별점순</option>
-                  </select>
+                <input 
+                  type="text" 
+                  v-model="searchQuery" 
+                  placeholder="검색..." 
+                  style="font-family:inherit; font-size:9px; width:80px; padding:1px 4px; border:1px solid gray;"
+                />
+              </div>
+
+              <!-- Photo Gallery Grid -->
+              <div v-if="loading" style="font-size:10px; text-align:center; padding: 20px;">
+                저장소를 불러오는 중...
+              </div>
+              <div v-else class="projects-gallery">
+                <div v-for="repo in filteredRepos.slice(0, 4)" :key="repo.id" class="project-photo-card">
+                  <div class="photo-placeholder">📂</div>
+                  <div class="photo-title">{{ repo.name }}</div>
+                  <p class="photo-desc">{{ repo.description || '프로젝트 설명이 없습니다.' }}</p>
+                  <a :href="repo.html_url" target="_blank" rel="noopener noreferrer" class="photo-link">구경가기 →</a>
                 </div>
-              </div>
-
-              <!-- Loading spinner -->
-              <div v-if="loading" style="text-align:center; padding: 2rem;">
-                <p>사진첩을 불러오는 중...</p>
-              </div>
-
-              <!-- Gallery projects grid -->
-              <div v-else-if="filteredRepos.length > 0" class="gallery-grid">
-                <div v-for="repo in filteredRepos" :key="repo.id" class="gallery-card">
-                  <!-- Graphic placeholder -->
-                  <div class="gallery-image-placeholder">
-                    📂
-                  </div>
-                  <div class="gallery-body">
-                    <h3 class="gallery-title">{{ repo.name }}</h3>
-                    <p class="gallery-desc">{{ repo.description || '등록된 프로젝트 설명이 없습니다.' }}</p>
-                    
-                    <div class="gallery-footer">
-                      <div class="gallery-lang">
-                        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#f59e0b; margin-right:2px;"></span>
-                        <span>{{ repo.language || 'Code' }}</span>
-                      </div>
-                      <a :href="repo.html_url" target="_blank" rel="noopener noreferrer" class="gallery-link">
-                        구경가기 →
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div v-else style="text-align:center; padding: 2rem; color:var(--cy-text-light);">
-                등록된 프로젝트가 없습니다.
               </div>
             </div>
 
             <!-- 4. GUESTBOOK TAB (방명록) -->
-            <div v-else-if="activeTab === 'guestbook'" class="guestbook-section">
-              <!-- Guestbook submit card -->
-              <div class="guestbook-form-card">
+            <div v-else-if="activeTab === 'guestbook'" class="guestbook-wrapper">
+              <div class="contents_title">
+                <div class="title">Guest Book</div>
+                <div class="subtitle">방명록을 남겨주세요</div>
+              </div>
+              <div class="divdideLine"></div>
+
+              <!-- Submit Form -->
+              <div class="guestbook-input-card">
                 <form 
                   name="contact" 
                   method="POST" 
@@ -480,16 +409,16 @@ const getRelativeDate = (dateString) => {
                   <p style="display: none;">
                     <label><input name="bot-field" /></label>
                   </p>
-
-                  <div class="guestbook-input-row">
+                  
+                  <div class="guestbook-form-row">
                     <input 
                       type="text" 
                       name="name" 
                       v-model="contactForm.name" 
                       required 
                       placeholder="이름" 
-                      class="guestbook-control" 
-                      style="width: 120px;"
+                      class="guestbook-form-input" 
+                      style="width: 80px;"
                     />
                     <input 
                       type="email" 
@@ -497,7 +426,7 @@ const getRelativeDate = (dateString) => {
                       v-model="contactForm.email" 
                       required 
                       placeholder="이메일" 
-                      class="guestbook-control" 
+                      class="guestbook-form-input" 
                       style="flex: 1;"
                     />
                   </div>
@@ -505,77 +434,67 @@ const getRelativeDate = (dateString) => {
                     name="message" 
                     v-model="contactForm.message" 
                     required 
-                    placeholder="방명록을 남겨주세요 (Netlify Form 연동)" 
-                    class="guestbook-control guestbook-textarea"
+                    placeholder="방명록을 입력해 주세요." 
+                    class="guestbook-form-input guestbook-form-textarea"
                   ></textarea>
-
                   <button 
                     type="submit" 
                     :disabled="submitting" 
-                    class="guestbook-submit"
+                    class="guestbook-form-submit"
                   >
-                    {{ submitting ? '작성 중...' : '등록' }}
+                    {{ submitting ? '등록중...' : '등록' }}
                   </button>
                 </form>
-
-                <div v-if="formSubmitted" style="font-size:0.75rem; color:#10b981; margin-top:8px; font-weight:bold; text-align:center;">
-                  ✓ 방명록이 정상적으로 등록되었습니다!
-                </div>
-                <div v-if="formError" style="font-size:0.75rem; color:#ef4444; margin-top:8px; font-weight:bold; text-align:center;">
-                  ✗ 등록 중 오류가 발생했습니다. 다시 시도해 주세요.
+                
+                <div v-if="formSubmitted" style="font-size:9px; color:#10b981; margin-top:4px; text-align:center; font-weight:bold;">
+                  방명록이 등록되었습니다!
                 </div>
               </div>
 
-              <!-- Guestbook posts list -->
-              <div class="guestbook-timeline">
-                <div v-for="entry in guestbookEntries" :key="entry.id" class="guestbook-card">
-                  <div class="guestbook-card-header">
-                    <span class="guestbook-card-author">{{ entry.name }}</span>
+              <!-- Entries Timeline -->
+              <div class="guestbook-entries">
+                <div v-for="entry in guestbookEntries" :key="entry.id" class="guestbook-post">
+                  <div class="guestbook-post-header">
+                    <span class="guestbook-post-author">{{ entry.name }}</span>
                     <span>({{ entry.createdAt }})</span>
                   </div>
-                  <p class="guestbook-card-body">{{ entry.message }}</p>
+                  <p class="guestbook-post-body">{{ entry.message }}</p>
                 </div>
               </div>
             </div>
 
           </div>
-        </main>
+        </div>
 
-        <!-- Vertical folder tabs on the right edge -->
-        <nav class="nav-tabs-vertical">
-          <button 
+        <!-- NAVIGATION: Right vertical tabs from original template -->
+        <div class="navigation">
+          <div 
             @click="activeTab = 'home'" 
-            :class="['nav-tab-v', { inactive: activeTab !== 'home' }]"
+            :class="['navigation_item', { inactive: activeTab !== 'home' }]"
           >
             홈
-          </button>
-          <button 
+          </div>
+          <div 
             @click="activeTab = 'profile'" 
-            :class="['nav-tab-v', { inactive: activeTab !== 'profile' }]"
+            :class="['navigation_item', { inactive: activeTab !== 'profile' }]"
           >
             프로필
-          </button>
-          <button 
+          </div>
+          <div 
             @click="activeTab = 'projects'" 
-            :class="['nav-tab-v', { inactive: activeTab !== 'projects' }]"
+            :class="['navigation_item', { inactive: activeTab !== 'projects' }]"
           >
             사진첩
-          </button>
-          <button 
+          </div>
+          <div 
             @click="activeTab = 'guestbook'" 
-            :class="['nav-tab-v', { inactive: activeTab !== 'guestbook' }]"
+            :class="['navigation_item', { inactive: activeTab !== 'guestbook' }]"
           >
             방명록
-          </button>
-        </nav>
+          </div>
+        </div>
 
       </div>
     </div>
-
-    <!-- Cyworld footer copyright -->
-    <footer class="cyworld-footer">
-      <p>&copy; 2026 Yeo Ji Sun (Yeossi). All rights reserved.</p>
-      <p>Retro design inspired by classic Cyworld mini-homepage.</p>
-    </footer>
   </div>
 </template>
