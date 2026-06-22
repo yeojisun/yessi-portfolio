@@ -39,7 +39,7 @@ const contactForm = ref({
 
 // Guestbook list (initial// Backend API URL mapping
 const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:8080'
+  ? 'http://localhost:8085'
   : 'https://yeossi-backend.onrender.com' // Replace with your actual Render URL once deployed
 
 // Guestbook list (loaded dynamically from database)
