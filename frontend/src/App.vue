@@ -190,11 +190,12 @@ const handleSubmit = async () => {
     } else {
       const body = new URLSearchParams()
       body.append('form-name', 'contact')
+      body.append('bot-field', '')
       body.append('name', contactForm.value.name)
       body.append('email', contactForm.value.email)
       body.append('message', contactForm.value.message)
 
-      const response = await fetch('/', {
+      const response = await fetch('/index.html', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: body.toString()
