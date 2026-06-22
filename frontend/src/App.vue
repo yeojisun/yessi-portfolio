@@ -177,20 +177,32 @@ const handleSubmit = async () => {
   formSubmitted.value = false
   formError.value = false
 
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+
   try {
-    const body = new URLSearchParams()
-    body.append('form-name', 'contact')
-    body.append('name', contactForm.value.name)
-    body.append('email', contactForm.value.email)
-    body.append('message', contactForm.value.message)
+    let success = false
 
-    const response = await fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: body.toString()
-    })
+    if (isLocal) {
+      // Simulate network request delay for natural UX
+      await new Promise(resolve => setTimeout(resolve, 500))
+      success = true
+      console.log('Local development mode: Bypassed Netlify form POST. Message saved to screen mockup.')
+    } else {
+      const body = new URLSearchParams()
+      body.append('form-name', 'contact')
+      body.append('name', contactForm.value.name)
+      body.append('email', contactForm.value.email)
+      body.append('message', contactForm.value.message)
 
-    if (response.ok) {
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
+      })
+      success = response.ok
+    }
+
+    if (success) {
       formSubmitted.value = true
       
       // Prepend entry dynamically
@@ -204,7 +216,7 @@ const handleSubmit = async () => {
       // Reset form fields
       contactForm.value = { name: '', email: '', message: '' }
     } else {
-      throw new Error('Netlify form submission failed')
+      throw new Error('Form submission failed')
     }
   } catch (err) {
     console.error(err)
