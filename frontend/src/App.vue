@@ -17,6 +17,7 @@ const bgmName = '프리스타일 - Y ♬'
 
 // BGM audio states
 const isPlaying = ref(false)
+const showWaveModal = ref(false)
 
 const toggleBgm = () => {
   const player = document.getElementById('yt-player')
@@ -34,6 +35,34 @@ const toggleBgm = () => {
     }), '*')
   }
   isPlaying.value = !isPlaying.value
+}
+
+const stopBgm = () => {
+  const player = document.getElementById('yt-player')
+  if (!player) return
+  player.contentWindow.postMessage(JSON.stringify({
+    event: 'command',
+    func: 'stopVideo'
+  }), '*')
+  isPlaying.value = false
+}
+
+const prevTrack = () => {
+  const player = document.getElementById('yt-player')
+  if (!player) return
+  player.contentWindow.postMessage(JSON.stringify({
+    event: 'command',
+    func: 'seekTo',
+    args: [0, true]
+  }), '*')
+}
+
+const nextTrack = () => {
+  alert('등록된 다른 BGM이 없습니다.')
+}
+
+const handleWaveMenuClick = () => {
+  showWaveModal.value = true
 }
 
 // API states
@@ -280,8 +309,10 @@ const handleSubmit = async () => {
       style="position: absolute; width: 1px; height: 1px; left: -9999px; top: -9999px; border: none; pointer-events: none;"
       allow="autoplay"
     ></iframe>
-    <div class="outerbox">
-      <div class="wrapper">
+    <!-- DESKTOP ONLY LAYOUT -->
+    <div class="desktop-only-layout">
+      <div class="outerbox">
+        <div class="wrapper">
         
         <!-- WRAPPER LEFT: Profile Panel -->
         <div class="wrapper__left">
@@ -342,11 +373,7 @@ const handleSubmit = async () => {
           <div class="wrapper__right__header">
             <div class="right__header__title"><b>Hello Yeo’s World!</b></div>
             <div class="right__header__setup">
-              <span class="bgm-icon" :class="{ 'bgm-playing': isPlaying }">🎵</span>
-              <span>{{ bgmName }}</span>
-              <button @click="toggleBgm" class="bgm-btn">
-                {{ isPlaying ? '⏸' : '▶' }}
-              </button>
+              <span style="font-size: 9px; font-weight: bold; color: #ff5500; cursor: pointer;">★ 일촌맺기 ★ 팬되기</span>
             </div>
           </div>
           <div class="wrapper__right__body">
@@ -562,6 +589,207 @@ const handleSubmit = async () => {
           </div>
         </div>
 
+      </div>
+    </div>
+    
+    <!-- Desktop Right-Side Music Player Sidebar -->
+    <div class="desktop-sidebar-player">
+      <div class="player-card">
+        <!-- Digital Display Screen -->
+        <div class="player-display">
+          <div class="marquee-container">
+            <span class="marquee-text" :class="{ 'marquee-playing': isPlaying }">{{ bgmName }}</span>
+          </div>
+          <span class="digital-status" :class="{ 'live-blinking': isPlaying }">LIVE</span>
+        </div>
+        <!-- Progress Bar -->
+        <div class="player-progress-bar">
+          <div class="progress-fill" :style="{ width: isPlaying ? '60%' : '0%' }"></div>
+        </div>
+        <!-- Control Buttons -->
+        <div class="player-buttons">
+          <button @click="prevTrack" class="ctrl-btn">⏮</button>
+          <button @click="toggleBgm" class="ctrl-btn play-btn">
+            {{ isPlaying ? '⏸' : '▶' }}
+          </button>
+          <button @click="stopBgm" class="ctrl-btn">⏹</button>
+          <button @click="nextTrack" class="ctrl-btn">⏭</button>
+          <span class="volume-icon">🔊</span>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- MOBILE ONLY LAYOUT -->
+    <div class="mobile-only-layout">
+      <!-- 1. Header (Top Blue Bar) -->
+      <div class="mobile-header">
+        <div class="mobile-header-title">Hello Yeo’s World!</div>
+        <div class="mobile-header-icons">
+          <span class="m-icon" style="font-size: 14px;">⚙️</span>
+          <span class="m-icon" style="font-size: 14px;">🔗</span>
+          <span class="m-icon" style="font-size: 14px;" @click="handleWaveMenuClick">💨</span>
+        </div>
+      </div>
+
+      <!-- 2. Active Tab Content Pane -->
+      <div class="mobile-body">
+        
+        <!-- Home Sub-page -->
+        <div v-if="activeTab === 'home'" class="mobile-subpage">
+          <!-- Card 1: Stats Grid -->
+          <div class="mobile-card">
+            <div class="mobile-stats-grid">
+              <div class="grid-item">
+                <span class="grid-label">다이어리</span>
+                <span class="grid-value">0/0</span>
+              </div>
+              <div class="grid-item" @click="activeTab = 'projects'">
+                <span class="grid-label">사진첩</span>
+                <span class="grid-value">0/{{ filteredRepos.length }}</span>
+              </div>
+              <div class="grid-item" @click="toggleBgm" style="cursor: pointer;">
+                <span class="grid-label">쥬크박스</span>
+                <span class="grid-value">
+                  1/1 <span class="badge-n">N</span>
+                  <span style="font-size: 8px; margin-left: 2px;">{{ isPlaying ? '⏸' : '▶' }}</span>
+                </span>
+              </div>
+              <div class="grid-item" @click="activeTab = 'guestbook'">
+                <span class="grid-label">방명록</span>
+                <span class="grid-value">0/{{ guestbookEntries.length }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Mini Room -->
+          <div class="mobile-card">
+            <div class="card-header">
+              <span class="card-title-blue">Mini Room</span>
+              <span class="card-subtitle-gray">기본 미니룸</span>
+            </div>
+            <div class="body__contents__body_gray" style="height: 160px; margin-top: 8px;">
+              <div class="miniroom-floor"></div>
+              <div class="miniroom-avatar">
+                <div class="miniroom-speech" style="font-size: 8px; padding: 2px 4px;">어서오세요! {{ todayMood }} 모드 여지선 미니룸 ☘</div>
+                <img :src="profile.avatar_url" alt="Yeossi avatar" style="width: 44px; height: 44px;" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: What Friends Say -->
+          <div class="mobile-card" style="margin-bottom: 20px;">
+            <div class="card-header">
+              <span class="card-title-blue">What Friends Say</span>
+            </div>
+            <div class="friends-say-container">
+              <div v-if="guestbookEntries.length === 0" class="empty-friends-say">
+                <div class="speech-bubble-icon">💬</div>
+                <div style="font-size: 10px; color: gray; margin-top: 4px;">등록된 일촌평이 없어요.</div>
+              </div>
+              <div v-else class="friends-say-list">
+                <div v-for="entry in guestbookEntries.slice(0, 3)" :key="entry.id" class="friend-say-item">
+                  <span class="friend-say-name">{{ entry.name.replace(' (손님)', '').replace(' (일촌)', '') }}</span>
+                  <span class="friend-say-msg">{{ entry.message }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Sub-page (싸이생활) -->
+        <div v-else-if="activeTab === 'profile'" class="mobile-card" style="padding: 15px;">
+          <div class="card-header" style="margin-bottom: 10px;">
+            <span class="card-title-blue">싸이생활 (Profile)</span>
+          </div>
+          <p style="font-size:11px; color:#333; line-height:1.5; margin-bottom: 12px; white-space: pre-wrap;">
+            새로운 것에 대한 두려움보다는 설렘을 갖는 개발자 입니다. 동료들과 협업하고 의사소통하며 성취하는 것에 희열(?)을 느끼는 개발자입니다.
+          </p>
+          <div class="profile-timeline" style="margin-top: 15px;">
+            <div v-for="item in timeline" :key="item.date" class="profile-timeline-item">
+              <div class="profile-timeline-date" style="font-size: 9px; font-weight: bold; color: #298eb5;">{{ item.date }}</div>
+              <div class="profile-timeline-desc" style="font-size: 10px; margin-top: 2px;">{{ item.text }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Projects Sub-page (사진첩) -->
+        <div v-else-if="activeTab === 'projects'" class="mobile-card" style="padding: 12px;">
+          <div class="card-header" style="margin-bottom: 10px;">
+            <span class="card-title-blue">사진첩 (Projects)</span>
+          </div>
+          <div class="projects-gallery" style="grid-template-columns: 1fr; gap: 10px;">
+            <div v-for="repo in filteredRepos.slice(0, 4)" :key="repo.id" class="project-photo-card" style="padding: 8px;">
+              <div class="photo-placeholder" style="height: 80px;">📂</div>
+              <div class="photo-title" style="font-size: 11px; font-weight: bold; margin-top: 4px;">{{ repo.name }}</div>
+              <p class="photo-desc" style="font-size: 9px; color: gray; height: auto; overflow: visible; display: block; -webkit-line-clamp: none;">{{ repo.description || '프로젝트 설명이 없습니다.' }}</p>
+              <a :href="repo.html_url" target="_blank" rel="noopener noreferrer" class="photo-link" style="font-size: 9px; margin-top: 4px;">구경가기 →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Guestbook Sub-page (방명록) -->
+        <div v-else-if="activeTab === 'guestbook'" class="mobile-card" style="padding: 12px; margin-bottom: 20px;">
+          <div class="card-header" style="margin-bottom: 8px;">
+            <span class="card-title-blue">방명록 (Guestbook)</span>
+          </div>
+          <!-- Guestbook Form -->
+          <div class="guestbook-input-card" style="margin-bottom: 12px; padding: 8px;">
+            <form @submit.prevent="handleSubmit" class="guestbook-form">
+              <div class="guestbook-form-row">
+                <input type="text" required v-model="contactForm.name" placeholder="이름" class="guestbook-form-input" style="width: 70px; font-size: 9px;" />
+                <input type="email" required v-model="contactForm.email" placeholder="이메일" class="guestbook-form-input" style="flex: 1; font-size: 9px;" />
+              </div>
+              <textarea required v-model="contactForm.message" placeholder="방명록을 남겨주세요." class="guestbook-form-input guestbook-form-textarea" style="font-size: 9px; min-height: 35px;"></textarea>
+              <button type="submit" :disabled="submitting" class="guestbook-form-submit" style="font-size: 9px; padding: 2px 8px;">
+                {{ submitting ? '등록중...' : '등록' }}
+              </button>
+            </form>
+          </div>
+          <!-- Guestbook History -->
+          <div class="guestbook-entries" style="gap: 6px;">
+            <div v-for="entry in guestbookEntries" :key="entry.id" class="guestbook-post" style="padding: 6px;">
+              <div class="guestbook-post-header" style="font-size: 8px; margin-bottom: 4px;">
+                <span class="guestbook-post-author" style="color: #298eb5; font-weight: bold;">{{ entry.name }}</span>
+                <span>({{ entry.createdAt }})</span>
+              </div>
+              <p class="guestbook-post-body" style="font-size: 9px;">{{ entry.message }}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 3. Fixed Footer Navigation Bar -->
+      <div class="mobile-footer-nav">
+        <div class="footer-nav-item" :class="{ 'footer-active': activeTab === 'profile' }" @click="activeTab = 'profile'">
+          <span class="footer-icon">👤</span>
+          <span class="footer-label">싸이생활</span>
+        </div>
+        <div class="footer-nav-item" :class="{ 'footer-active': activeTab === 'home' }" @click="activeTab = 'home'">
+          <span class="footer-icon">🏠</span>
+          <span class="footer-label">미니홈피</span>
+        </div>
+        <div class="footer-nav-item" @click="handleWaveMenuClick">
+          <span class="footer-icon">💨</span>
+          <span class="footer-label">파도타기</span>
+        </div>
+        <div class="footer-nav-item" :class="{ 'footer-active': activeTab === 'projects' || activeTab === 'guestbook' }" @click="activeTab = 'projects'">
+          <span class="footer-icon">⚙️</span>
+          <span class="footer-label">더보기</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Retro Wave Modal for Mobile -->
+    <div v-if="showWaveModal" class="wave-modal-overlay" @click="showWaveModal = false">
+      <div class="wave-modal-content" @click.stop>
+        <div class="wave-modal-header">일촌 파도타기</div>
+        <div class="wave-modal-body">
+          <a :href="profile.html_url" target="_blank" class="wave-modal-link">📁 GitHub 저장소 바로가기</a>
+          <a href="mailto:duwltjs5921@gmail.com" class="wave-modal-link">✉️ 이메일 보내기</a>
+        </div>
+        <button class="wave-modal-close" @click="showWaveModal = false">닫기</button>
       </div>
     </div>
   </div>
