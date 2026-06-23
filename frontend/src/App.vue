@@ -38,7 +38,7 @@ const toggleBgm = () => {
 
 // API states
 const profile = ref({
-  avatar_url: '',
+  avatar_url: '/images/profile.png',
   name: '여지선 (Yeossi)',
   bio: '',
   public_repos: 0,
@@ -168,7 +168,7 @@ onMounted(async () => {
     if (profileRes.ok) {
       const data = await profileRes.json()
       profile.value = {
-        avatar_url: data.avatar_url,
+        avatar_url: '/images/profile.png',
         name: data.name || '여지선 (Yeossi)',
         bio: data.bio || profile.value.bio,
         public_repos: data.public_repos,
