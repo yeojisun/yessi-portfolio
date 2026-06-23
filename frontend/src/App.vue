@@ -340,7 +340,7 @@ const handleSubmit = async () => {
         <!-- WRAPPER RIGHT: Content Panel -->
         <div class="wrapper__right">
           <div class="wrapper__right__header">
-            <div class="right__header__title"><b>{{ profile.name }}의 미니홈피</b></div>
+            <div class="right__header__title"><b>Hello Yeo’s World!</b></div>
             <div class="right__header__setup">
               <span class="bgm-icon" :class="{ 'bgm-playing': isPlaying }">🎵</span>
               <span>{{ bgmName }}</span>
@@ -394,9 +394,8 @@ const handleSubmit = async () => {
               </div>
               <div class="divdideLine"></div>
               
-              <p style="font-size:10px; color:#555; line-height:1.4; margin-bottom: 8px;">
-                안녕하세요! 자바 백엔드와 뷰3 프론트엔드를 다루는 주니어 개발자 여지선입니다.
-                구조적이고 확장 가능한 백엔드 아키텍처 설계와 아름답고 사용하기 편리한 웹 서비스 개발을 지향합니다.
+              <p style="font-size:10px; color:#555; line-height:1.4; margin-bottom: 8px; white-space: pre-wrap;">
+                새로운 것에 대한 두려움보다는 설렘을 갖는 개발자 입니다. 동료들과 협업하고 의사소통하며 성취하는 것에 희열(?)을 느끼는 개발자입니다.
               </p>
 
               <div class="profile-timeline">
