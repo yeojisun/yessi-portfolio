@@ -608,6 +608,10 @@ const handleSubmit = async () => {
               </div>
               <div class="divdideLine"></div>
               
+              <div style="font-size: 11px; font-weight: bold; color: #e85d04; margin-bottom: 8px; display: flex; align-items: center; gap: 4px;">
+                <span>💼 총 경력: 10년 10개월 (11년차)</span>
+              </div>
+
               <p style="font-size:10px; color:#555; line-height:1.4; margin-bottom: 12px; white-space: pre-wrap;">
                 새로운 것에 대한 두려움보다는 설렘을 갖는 개발자 입니다. 동료들과 협업하고 의사소통하며 성취하는 것에 희열(?)을 느끼는 개발자입니다.
               </p>
@@ -905,6 +909,9 @@ const handleSubmit = async () => {
         <div v-else-if="activeTab === 'profile'" class="mobile-card" style="padding: 15px;">
           <div class="card-header" style="margin-bottom: 10px;">
             <span class="card-title-blue">싸이생활 (Profile)</span>
+          </div>
+          <div style="font-size: 11px; font-weight: bold; color: #e85d04; margin-bottom: 8px; display: flex; align-items: center; gap: 4px;">
+            <span>💼 총 경력: 10년 10개월 (11년차)</span>
           </div>
           <p style="font-size:11px; color:#333; line-height:1.5; margin-bottom: 12px; white-space: pre-wrap;">
             새로운 것에 대한 두려움보다는 설렘을 갖는 개발자 입니다. 동료들과 협업하고 의사소통하며 성취하는 것에 희열(?)을 느끼는 개발자입니다.
