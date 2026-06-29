@@ -1034,3 +1034,107 @@ body {
     font-family: inherit;
   }
 }
+
+/* --- Career Portfolio Resume Styles --- */
+.career-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.career-company-card {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.career-company-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dotted #9ca3af;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.career-company-name {
+  font-size: 11px;
+  font-weight: bold;
+  color: #298eb5;
+}
+
+.career-company-period {
+  font-size: 8px;
+  color: #6b7280;
+}
+
+.career-company-subheader {
+  margin-bottom: 6px;
+}
+
+.career-company-role {
+  font-size: 9px;
+  font-weight: bold;
+  color: #374151;
+  background-color: #e5e7eb;
+  padding: 1px 5px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.career-company-duties {
+  margin-bottom: 10px;
+  padding-left: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.career-duty-item {
+  font-size: 10px;
+  color: #4b5563;
+  line-height: 1.4;
+}
+
+.career-projects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px dashed #d1d5db;
+  padding-top: 10px;
+}
+
+.career-project-item {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.career-project-title {
+  font-size: 10px;
+  font-weight: bold;
+  color: #e85d04; /* Orange accent */
+  line-height: 1.3;
+}
+
+.career-project-meta {
+  font-size: 8px;
+  color: #6b7280;
+  margin: 2px 0 6px 0;
+}
+
+.career-project-details {
+  padding-left: 14px;
+}
+
+.career-project-details li {
+  font-size: 9px;
+  color: #374151;
+  line-height: 1.4;
+  margin-bottom: 2px;
+}
+
