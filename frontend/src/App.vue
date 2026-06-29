@@ -178,27 +178,198 @@ const fallbackRepos = [
   }
 ]
 
-// Timeline information for Profile
-const timeline = [
+// Career & Project experience information for Profile
+const career = [
   {
-    date: '2024.11 ~ 현재',
-    text: '뱅크웨어글로벌 ㈜ | 과장/팀원 (웹개발)\n• 하나은행 DMD 통합금고 재구축 (2024.11 ~ 2025.04 | Java, JSP, Websquare, PostgreSQL)\n• SBI 저축은행 여신 채널 통합 및 미성년자 비대면서비스구축 (2025.05 ~ 2026.04 | Java, JSP, Jex Framework)'
+    company: '뱅크웨어글로벌 ㈜',
+    role: '과장 / 팀원',
+    period: '2024.11 ~ 재직중',
+    duration: '',
+    duties: ['웹개발'],
+    projects: [
+      {
+        name: '하나은행 DMD 통합금고 재구축',
+        period: '2024-11 ~ 2025-04',
+        role: 'java, jsp, Websquare, postgresSQL 개발',
+        details: [
+          'DMD 통합금고 재구축 개발 지원'
+        ]
+      },
+      {
+        name: 'SBI 저축은행 여신 채널 통합 및 미성년자 비대면서비스구축',
+        period: '2025-05 ~ 2026-04',
+        role: 'java, jsp, Jex Framework 개발',
+        details: [
+          '여신 채널 통합 및 미성년자 비대면 서비스 구축 지원'
+        ]
+      }
+    ]
   },
   {
-    date: '2022.05 ~ 2024.07',
-    text: '케이스마텍 | 개발팀 과장 (웹개발/서비스개발팀)\n• 하나은행 트래블로그 (2024.02 ~ 2024.06 | Java, JSP)\n• 하나캐피탈 DT리빌드 구축 (2022.11 ~ 2023.12 | Vue.js, Java)\n• 현대자동차 블루링크 플릿 2.0 (2022.06 ~ 2022.10 | Java, JSP, Thymeleaf)'
+    company: '케이스마텍',
+    role: '개발팀 · 과장/팀원 1년차',
+    period: '2022.05 ~ 2024.07',
+    duration: '2년 3개월',
+    duties: ['웹개발', '서비스개발팀 과장 (1년차)'],
+    projects: [
+      {
+        name: '하나은행 트래블로그',
+        period: '2024-02 ~ 2024-06',
+        role: 'java, jsp 개발',
+        details: [
+          '트래블로그 외환 서비스 개발 지원'
+        ]
+      },
+      {
+        name: '현대자동차 블루링크 플릿 2.0 : 상용차 전용 커넥티드 솔루션',
+        period: '2022-06 ~ 2022-10',
+        role: '풀스택 개발',
+        details: [
+          '차량 위치와 상태를 빠르게 확인하고 예방 예측 정비를 통해 가동률을 향상해 안전하고 효율적인 상용차 관리 및 운영을 지원하는 서비스(java / jsp / thymeleaf 기반) 홈페이지 개발 지원',
+          '데이터베이스 아키텍쳐 설계 지원'
+        ]
+      },
+      {
+        name: '하나캐피탈 DT리빌드 구축',
+        period: '2022-11 ~ 2023-12',
+        role: '프론트엔드 / 백엔드 개발',
+        details: [
+          'Vue.js를 활용한 다양한 웹 컴포넌트 및 화면 개발 지원',
+          'java 기반 서비스 개발 지원'
+        ]
+      }
+    ]
   },
   {
-    date: '2020.08 ~ 2022.05',
-    text: '인프라닉스 | DX SW 개발팀 대리 (사내 솔루션 프론트엔드 개발 및 유지보수)\n• Sysmaster suite K8s 신규 사내 솔루션 개발 (2022.01 ~ 2022.02 | Vue, Java)\n• Sysmaster suite 8.0 사내 솔루션 개발 및 운영 (2021.06 ~ 2021.12 | Java, JSP, jqxgrid, fusionchart)\n• 행정안전부 전자정부 클라우드 플랫폼 구축 사업 2차 (2020.09 ~ 2021.05 | Java, JSP, React, Grafana, Kibana)'
+    company: '인프라닉스',
+    role: 'DX SW 개발팀 · 대리 1년차',
+    period: '2020.08 ~ 2022.05',
+    duration: '1년 10개월',
+    duties: ['사내 솔루션 프론트엔드 개발 및 유지보수'],
+    projects: [
+      {
+        name: '행정안전부 전자정부 클라우드 플랫폼 구축 사업 2차',
+        period: '2020-09-01 ~ 2021-05-01',
+        role: '플랫폼 통합 모니터링 아키텍쳐 설계 및 프론트/백엔드 개발',
+        details: [
+          'java / jsp 기반 모니터링 홈페이지 개발 지원',
+          'react 기반 grafana 오픈소스 프론트엔드 수정 개발 지원 및 대시보드 구성 / 배치',
+          'react 기반 kibana dashboard 오픈소스 프론트엔드 수정 개발 지원',
+          '하자보수 지원'
+        ]
+      },
+      {
+        name: 'Sysmaster suite 8.0 사내 솔루션 개발 및 운영',
+        period: '2021-06-01 ~ 2021-12-01',
+        role: '웹 프론트엔드 / 백엔드 개발',
+        details: [
+          'java / jsp 기반 프론트엔드 / 백엔드 웹 개발',
+          '토폴로지맵 개발 (jqxgrid, fusionchart)',
+          '제품테스트(QA) 지원'
+        ]
+      },
+      {
+        name: 'Sysmaster suite K8s 신규 사내 솔루션 개발',
+        period: '2022-01-01 ~ 2022-02-01',
+        role: '프론트엔드 개발',
+        details: [
+          'Vue 기반 프론트엔드 웹 개발',
+          'Java 기반 백엔드 개발 지원'
+        ]
+      }
+    ]
   },
   {
-    date: '2017.09 ~ 2020.03',
-    text: '씨알랩 | 개발팀 대리 (웹사이트, 응용sw 개발 및 유지보수)\n• 현대카드 모니터링 시스템 유지보수 및 추가개발 (2017.09 ~ 2020.03 | Java, C#, C++)\n• 인천종합에너지 홈페이지 에너지 바우처 기능 추가 개발 (2017.09 ~ 2020.03 | Java)\n• 인천 미래엔 홈페이지 에너지 바우처 기능 추가 개발 (2019.01 ~ 2020.03 | HTML, jQuery, PHP)\n• 회사 내부 솔루션 외국어 메뉴판 번역 앱 개발 (2019.01 ~ 2019.12 | Android, Java, Google OCR API)\n• 안양시 시설관리공단 주차관리 시스템 유지보수 (2018.10 ~ 2019.05 | C#)'
+    company: '씨알랩',
+    role: '개발팀 · 대리 2년차',
+    period: '2017.09 ~ 2020.03',
+    duration: '2년 7개월',
+    duties: ['웹사이트, 응용sw 개발 및 유지보수'],
+    projects: [
+      {
+        name: '현대카드 모니터링 시스템 유지보수 및 추가개발',
+        period: '2017-09-01 ~ 2020-03-01',
+        role: '유지보수 및 개발',
+        details: [
+          'java 기반 현대카드 모니터링 홈페이지 유지보수',
+          'C#, C++ 기반 현대카드 모니터링 sw 유지보수'
+        ]
+      },
+      {
+        name: '인천종합에너지 홈페이지 개발',
+        period: '2017-09-01 ~ 2020-03-01',
+        role: '웹 개발 및 유지보수',
+        details: [
+          'java 기반 홈페이지 에너지 바우처 기능 추가 개발 및 전체 홈페이지 기능 유지보수'
+        ]
+      },
+      {
+        name: '인천 미래엔 홈페이지 개발',
+        period: '2019-01-01 ~ 2020-03-01',
+        role: '웹 개발 및 유지보수',
+        details: [
+          'html/jquery/php 기반 홈페이지 에너지 바우처 기능 추가 개발 및 유지보수'
+        ]
+      },
+      {
+        name: '회사 내부 솔루션 앱 개발',
+        period: '2019-01-01 ~ 2019-12-01',
+        role: '모바일 개발',
+        details: [
+          'android/java 기반 google ocr api를 이용한 외국어 메뉴판 번역 앱 개발'
+        ]
+      },
+      {
+        name: '안양시 시설관리공단 주차관리 시스템 유지보수',
+        period: '2018-10-01 ~ 2019-05-01',
+        role: 'SW 유지보수',
+        details: [
+          'C# 기반 주차관리 sw 유지보수'
+        ]
+      }
+    ]
   },
   {
-    date: '2014.09 ~ 2017.03',
-    text: '㈜수리이엔씨 | 개발팀 사원 (Java 기반 웹 사이트 개발 및 C# 기반 수자원관리 시스템 개발)\n• 농어촌 공간정보 통합운영체계 구축용역 (2015.06 ~ 2017.03 | Java)\n• 농촌용수 합리화계획 상시관리체계 구축 방안 연구용역 (2014.09 ~ 2015.11 | C#, devexpress, postgreSQL)\n• 가뭄 대응능력 분석 시범모형 개발 (2014.09 ~ 2017.03 | C#, devexpress, postgreSQL, SWMM)\n• 농촌용수 합리화계획 홈페이지 유지보수 및 Google GIS 맵 서비스 개발 (2014.09 ~ 2017.03 | HTML, jQuery, Java)'
+    company: '㈜수리이엔씨',
+    role: '개발팀 · 사원 2년차',
+    period: '2014.09 ~ 2017.03',
+    duration: '2년 7개월',
+    duties: ['java 기반 웹 사이트 개발 및 유지보수', 'C# 기반 수자원관리 및 예측 시스템 개발'],
+    projects: [
+      {
+        name: '농어촌 공간정보 통합운영체계 구축용역',
+        period: '2015-06-01 ~ 2017-03-01',
+        role: '시스템 개발 및 운영',
+        details: [
+          '엑셀로 제작된 농어촌 공간자료를 통합 서버에 업로드 및 다운로드 받아 운영하는 java기반 시스템 개발 및 운영'
+        ]
+      },
+      {
+        name: '농촌용수 합리화계획 상시관리체계 구축 방안 연구용역',
+        period: '2014-09-01 ~ 2015-11-01',
+        role: '시스템 개발 및 운영',
+        details: [
+          '엑셀 / CAD로 제작된 합리화계획 자료를 상시로 업로드 및 관리/운영할 수 있는 C#, devexpress, postgreSQL 기반 시스템 개발 및 운영'
+        ]
+      },
+      {
+        name: '가뭄 대응능력 분석 시범모형 개발',
+        period: '2014-09-01 ~ 2017-03-01',
+        role: '시스템 개발',
+        details: [
+          '레이아웃구성 및 swmm모델을 이용한 가뭄 예측 및 분석 C#, devexpress, postgreSQL 기반 시스템 개발'
+        ]
+      },
+      {
+        name: '농촌용수 합리화계획 홈페이지 유지보수',
+        period: '2014-09-01 ~ 2017-03-01',
+        role: '웹 유지보수 및 GIS 개발',
+        details: [
+          'html/jquery/java 기반 홈페이지 유지보수 및 추가개발',
+          'google gis 오픈소스를 이용한 맵 서비스 개발 및 유지보수'
+        ]
+      }
+    ]
   }
 ]
 
@@ -441,10 +612,27 @@ const handleSubmit = async () => {
                 새로운 것에 대한 두려움보다는 설렘을 갖는 개발자 입니다. 동료들과 협업하고 의사소통하며 성취하는 것에 희열(?)을 느끼는 개발자입니다.
               </p>
 
-              <div class="profile-timeline">
-                <div v-for="item in timeline" :key="item.date" class="profile-timeline-item">
-                  <div class="profile-timeline-date" style="font-weight: bold; color: #298eb5;">{{ item.date }}</div>
-                  <div class="profile-timeline-desc" style="white-space: pre-wrap; line-height: 1.5; font-size: 10px; margin-top: 4px; color: #333;">{{ item.text }}</div>
+              <div class="career-container">
+                <div v-for="comp in career" :key="comp.company" class="career-company-card">
+                  <div class="career-company-header">
+                    <span class="career-company-name">{{ comp.company }}</span>
+                    <span class="career-company-period">{{ comp.period }} <span v-if="comp.duration">({{ comp.duration }})</span></span>
+                  </div>
+                  <div class="career-company-subheader">
+                    <span class="career-company-role">{{ comp.role }}</span>
+                  </div>
+                  <div class="career-company-duties" v-if="comp.duties && comp.duties.length">
+                    <div v-for="duty in comp.duties" :key="duty" class="career-duty-item">• {{ duty }}</div>
+                  </div>
+                  <div class="career-projects-list" v-if="comp.projects && comp.projects.length">
+                    <div v-for="proj in comp.projects" :key="proj.name" class="career-project-item">
+                      <div class="career-project-title">★ {{ proj.name }}</div>
+                      <div class="career-project-meta">{{ proj.period }} | {{ proj.role }}</div>
+                      <ul class="career-project-details">
+                        <li v-for="detail in proj.details" :key="detail">{{ detail }}</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -721,10 +909,27 @@ const handleSubmit = async () => {
           <p style="font-size:11px; color:#333; line-height:1.5; margin-bottom: 12px; white-space: pre-wrap;">
             새로운 것에 대한 두려움보다는 설렘을 갖는 개발자 입니다. 동료들과 협업하고 의사소통하며 성취하는 것에 희열(?)을 느끼는 개발자입니다.
           </p>
-          <div class="profile-timeline" style="margin-top: 15px;">
-            <div v-for="item in timeline" :key="item.date" class="profile-timeline-item">
-              <div class="profile-timeline-date" style="font-size: 9px; font-weight: bold; color: #298eb5;">{{ item.date }}</div>
-              <div class="profile-timeline-desc" style="white-space: pre-wrap; line-height: 1.5; font-size: 10px; margin-top: 4px; color: #333;">{{ item.text }}</div>
+          <div class="career-container">
+            <div v-for="comp in career" :key="comp.company" class="career-company-card">
+              <div class="career-company-header">
+                <span class="career-company-name">{{ comp.company }}</span>
+                <span class="career-company-period">{{ comp.period }} <span v-if="comp.duration">({{ comp.duration }})</span></span>
+              </div>
+              <div class="career-company-subheader">
+                <span class="career-company-role">{{ comp.role }}</span>
+              </div>
+              <div class="career-company-duties" v-if="comp.duties && comp.duties.length">
+                <div v-for="duty in comp.duties" :key="duty" class="career-duty-item">• {{ duty }}</div>
+              </div>
+              <div class="career-projects-list" v-if="comp.projects && comp.projects.length">
+                <div v-for="proj in comp.projects" :key="proj.name" class="career-project-item">
+                  <div class="career-project-title">★ {{ proj.name }}</div>
+                  <div class="career-project-meta">{{ proj.period }} | {{ proj.role }}</div>
+                  <ul class="career-project-details">
+                    <li v-for="detail in proj.details" :key="detail">{{ detail }}</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
